@@ -13,6 +13,7 @@ find_package(Qt6 COMPONENTS
         Gui
         Widgets
         REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
 
 add_executable(NTA main.cpp)
 target_link_libraries(NTA
@@ -21,3 +22,4 @@ target_link_libraries(NTA
         Qt::Widgets
 )
 
+target_link_libraries(NTA spdlog::spdlog)
