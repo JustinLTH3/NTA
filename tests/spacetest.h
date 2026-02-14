@@ -8,5 +8,10 @@ class SpaceTest : public QObject
 private
 slots :
     void initTestCase();
-    void test();
+    void createSpaceTest();
+    void createSpaceWhenSpaceExistTest();
+    void cleanup();
+
+private:
+    QDir dir;
 };
