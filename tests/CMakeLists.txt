@@ -9,9 +9,11 @@ find_package(Qt6 COMPONENTS
 add_executable(NTA_Test
         ../src/space.cpp
         ../src/space.h
-        spacetest.cpp
+        createspacetest.cpp
         main.cpp
-        spacetest.h
+        createspacetest.h
+        openspacetest.cpp
+        openspacetest.h
 )
 target_link_libraries(NTA_Test
         Qt::Core

@@ -2,18 +2,18 @@
 
 
 //
-#include "spacetest.h"
-#include "spacetest.moc"
+#include "createspacetest.h"
+#include "createspacetest.moc"
 
 #include <spdlog/spdlog.h>
 #include "../src/space.h"
 
-void SpaceTest::initTestCase()
+void CreateSpaceTest::initTestCase()
 {
     dir = QDir::current();
 }
 
-void SpaceTest::createSpaceTest()
+void CreateSpaceTest::createSpaceTest()
 {
     const QScopedPointer space(NTA::Space::createSpace(dir, "test.db"));
     QVERIFY(space != nullptr);
@@ -21,7 +21,7 @@ void SpaceTest::createSpaceTest()
     QVERIFY(dir.exists("test.db"));
 }
 
-void SpaceTest::createSpaceWhenSpaceExistTest()
+void CreateSpaceTest::createSpaceWhenSpaceExistTest()
 {
     QScopedPointer space(NTA::Space::createSpace(dir, "test.db"));
     QVERIFY(space != nullptr);
@@ -31,13 +31,13 @@ void SpaceTest::createSpaceWhenSpaceExistTest()
     QVERIFY(space == nullptr);
 }
 
-void SpaceTest::createSpaceWhenEmptyFileNameTest()
+void CreateSpaceTest::createSpaceWhenEmptyFileNameTest()
 {
     const QScopedPointer space(NTA::Space::createSpace(dir, ""));
     QVERIFY(space == nullptr);
 }
 
-void SpaceTest::createSpaceWhenDirNotExistTest()
+void CreateSpaceTest::createSpaceWhenDirNotExistTest()
 {
     QDir dir2 = dir.path() + "/test2";
     QVERIFY(!dir2.exists());
@@ -46,7 +46,7 @@ void SpaceTest::createSpaceWhenDirNotExistTest()
 }
 
 
-void SpaceTest::cleanup()
+void CreateSpaceTest::cleanup()
 {
     if (dir.exists("test.db"))
         dir.remove("test.db");
