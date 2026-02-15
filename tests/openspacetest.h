@@ -11,9 +11,11 @@ class OpenSpaceTest : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
+    void init();
     void openExistingSpaceTest();
     void openNonExistingSpaceTest();
+    void openNullSpaceTest();
+    void openDatabaseWithWrongHeaderTest();
     void cleanup();
     void cleanupTestCase();
 

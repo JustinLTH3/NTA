@@ -2,11 +2,9 @@
 #include "openspacetest.moc"
 #include "../src/space.h"
 
-void OpenSpaceTest::initTestCase()
+void OpenSpaceTest::init()
 {
     dir = QDir::current();
-    if (dir.exists("test.db"))
-        dir.remove("test.db");
     QScopedPointer space(NTA::Space::createSpace(dir, "test.db"));
 }
 
@@ -24,12 +22,25 @@ void OpenSpaceTest::openNonExistingSpaceTest()
     QVERIFY(space == nullptr);
 }
 
+void OpenSpaceTest::openNullSpaceTest()
+{
+    const QScopedPointer space(NTA::Space::openExistingSpace(""));
+    QVERIFY(space == nullptr);
+}
+
+void OpenSpaceTest::openDatabaseWithWrongHeaderTest()
+{
+    QScopedPointer space(NTA::Space::openExistingSpace(dir.path() + "/test.db"));
+    space->getFile()->exec("PRAGMA application_id = 1;");
+    const QScopedPointer space2(NTA::Space::openExistingSpace(dir.path() + "/test.db"));
+    QVERIFY(space2 == nullptr);
+}
+
 void OpenSpaceTest::cleanup()
 {
+    dir.remove("test.db");
 }
 
 void OpenSpaceTest::cleanupTestCase()
 {
-    if (dir.exists("test.db"))
-        dir.remove("test.db");
 }
