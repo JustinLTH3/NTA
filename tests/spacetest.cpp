@@ -18,6 +18,7 @@ void SpaceTest::createSpaceTest()
     const QScopedPointer space(NTA::Space::createSpace(dir, "test.db"));
     QVERIFY(space != nullptr);
     QVERIFY(space->getFile() != nullptr);
+    QVERIFY(dir.exists("test.db"));
 }
 
 void SpaceTest::createSpaceWhenSpaceExistTest()
