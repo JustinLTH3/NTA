@@ -30,6 +30,21 @@ void SpaceTest::createSpaceWhenSpaceExistTest()
     QVERIFY(space == nullptr);
 }
 
+void SpaceTest::createSpaceWhenEmptyFileNameTest()
+{
+    const QScopedPointer space(NTA::Space::createStorage(dir, ""));
+    QVERIFY(space == nullptr);
+}
+
+void SpaceTest::createSpaceWhenDirNotExistTest()
+{
+    QDir dir2 = dir.path() + "/test2";
+    QVERIFY(!dir2.exists());
+    const QScopedPointer space(NTA::Space::createStorage(dir2, "test.db"));
+    QVERIFY(space == nullptr);
+}
+
+
 void SpaceTest::cleanup()
 {
     if (dir.exists("test.db"))
