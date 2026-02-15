@@ -146,6 +146,59 @@ namespace NTA
         return nullptr;
     }
 
+    Space* Space::openExistingSpace(const QString& path)
+    {
+        if (path.isNull() || path.isEmpty())return nullptr;
+        try
+        {
+            const auto file = QSharedPointer<SQLite::Database>(
+                new SQLite::Database(path.toStdString(), SQLite::OPEN_READWRITE));
+            auto header = file->getHeaderInfo();
+            if (header.applicationId != applicationId)
+            {
+                spdlog::error("file {} is not a NTA, appid: {}", path.toStdString(), header.applicationId);
+                return nullptr;
+            }
+            if (!file->tableExists("notes"))
+            {
+                spdlog::error("table notes not exist");
+                return nullptr;
+            }
+            if (!file->tableExists("notes_fts"))
+            {
+                spdlog::error("table notes_fts not exist");
+                return nullptr;
+            }
+            if (!file->tableExists("note_links"))
+            {
+                spdlog::error("table note_links not exist");
+                return nullptr;
+            }
+            if (!file->tableExists("boards"))
+            {
+                spdlog::error("table boards not exist");
+                return nullptr;
+            }
+            if (!file->tableExists("note_type"))
+            {
+                spdlog::error("table note_type not exist");
+                return nullptr;
+            }
+            if (!file->tableExists("settings"))
+            {
+                spdlog::error("table settings not exist");
+                return nullptr;
+            }
+            sqlite3_ftsicu_init(file->getHandle(), nullptr, nullptr);
+            file->exec("PRAGMA foreign_keys = ON;");
+            return new Space(file);
+        } catch (std::exception& e)
+        {
+            spdlog::error("Failed to open storage {}", e.what());
+        }
+        return nullptr;
+    }
+
     Space::~Space()
     {
     }

@@ -16,6 +16,7 @@ namespace NTA
          * @return Space Ptr created if successful, nullptr if not.
          */
         static Space* createSpace(const QDir& path, const QString& name);
+        static Space* openExistingSpace(const QString& path);
         ~Space();
         QSharedPointer<SQLite::Database> getFile() { return file; }
 
