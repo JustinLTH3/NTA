@@ -7,7 +7,7 @@ extern "C" int sqlite3_ftsicu_init(sqlite3* db, char** pzErrMsg, const sqlite3_a
 
 namespace NTA
 {
-    Space* Space::createStorage(QDir path, QString name)
+    Space* Space::createSpace(const QDir& path, const QString& name)
     {
         if (!path.exists())
         {
@@ -19,7 +19,7 @@ namespace NTA
             spdlog::error("file {} already exist", name.toStdString());
             return nullptr;
         }
-        auto filePath = path.absoluteFilePath(name);
+        const auto filePath = path.absoluteFilePath(name);
         try
         {
             auto file = QSharedPointer<SQLite::Database>(

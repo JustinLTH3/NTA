@@ -10,7 +10,12 @@ namespace NTA
     class Space
     {
     public:
-        static Space* createStorage(QDir path, QString name);
+        /**
+         * @param path The path to create space at.
+         * @param name The filename of the space.
+         * @return Space Ptr created if successful, nullptr if not.
+         */
+        static Space* createSpace(const QDir& path, const QString& name);
         ~Space();
         QSharedPointer<SQLite::Database> getFile() { return file; }
 
