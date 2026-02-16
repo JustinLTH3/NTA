@@ -14,6 +14,7 @@ add_executable(NTA_Test
         createspacetest.h
         openspacetest.cpp
         openspacetest.h
+        ../src/Note.h
 )
 target_link_libraries(NTA_Test
         Qt::Core
