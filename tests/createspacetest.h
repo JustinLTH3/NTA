@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "QTest"
 
-class SpaceTest : public QObject
+class CreateSpaceTest : public QObject
 {
     Q_OBJECT
 
