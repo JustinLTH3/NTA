@@ -189,6 +189,15 @@ namespace NTA
                 spdlog::error("table settings not exist");
                 return nullptr;
             }
+
+            SQLite::Statement integrityCheck(*file, "PRAGMA integrity_check;");
+            integrityCheck.executeStep();
+            if (integrityCheck.getColumn(0).getString() != "ok")
+            {
+                spdlog::error("database is corrupted");
+                return nullptr;
+            }
+
             sqlite3_ftsicu_init(file->getHandle(), nullptr, nullptr);
             file->exec("PRAGMA foreign_keys = ON;");
             return new Space(file);

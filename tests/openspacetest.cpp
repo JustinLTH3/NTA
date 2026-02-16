@@ -10,10 +10,9 @@ void OpenSpaceTest::init()
 
 void OpenSpaceTest::openExistingSpaceTest()
 {
-    const QScopedPointer space(NTA::Space::createSpace(dir, "test.db"));
-    const QScopedPointer space2(NTA::Space::openExistingSpace(dir.path() + "/test.db"));
-    QVERIFY(space2 != nullptr);
-    QVERIFY(space2->getFile() != nullptr);
+    const QScopedPointer space1(NTA::Space::openExistingSpace(dir.path() + "/test.db"));
+    QVERIFY(space1 != nullptr);
+    QVERIFY(space1->getFile() != nullptr);
 }
 
 void OpenSpaceTest::openNonExistingSpaceTest()
@@ -31,6 +30,7 @@ void OpenSpaceTest::openNullSpaceTest()
 void OpenSpaceTest::openDatabaseWithWrongHeaderTest()
 {
     QScopedPointer space(NTA::Space::openExistingSpace(dir.path() + "/test.db"));
+    QVERIFY(space != nullptr);
     space->getFile()->exec("PRAGMA application_id = 1;");
     const QScopedPointer space2(NTA::Space::openExistingSpace(dir.path() + "/test.db"));
     QVERIFY(space2 == nullptr);
