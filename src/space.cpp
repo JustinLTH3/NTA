@@ -2,6 +2,8 @@
 
 #include <spdlog/spdlog.h>
 #include <sqlite3.h>
+
+#include "note.h"
 #include "SQLiteCpp/SQLiteCpp.h"
 extern "C" int sqlite3_ftsicu_init(sqlite3* db, char** pzErrMsg, const sqlite3_api_routines* pApi);
 
@@ -210,6 +212,26 @@ namespace NTA
 
     Space::~Space()
     {
+    }
+
+    QSharedPointer<Note> Space::createNote(const int64_t typeId, const QString& title)
+    {
+        SQLite::Statement statement(*file, "INSERT INTO notes (id, title, body, typeId) VALUES (null, ?, null, ?)");
+
+        statement.bind(1, title.toStdString());
+        statement.bind(2, typeId);
+        statement.exec();
+        SQLite::Statement r(*file, "SELECT * FROM notes WHERE id = last_insert_rowid()");
+        r.executeStep();
+        auto note = QSharedPointer<Note>(new Note{
+            .id = r.getColumn(0).getInt64(), .title = title,
+            .body = QString::fromStdString(r.getColumn(2).getString()), .typeId = typeId,
+            .createdAt = QDateTime::fromString(QString::fromStdString(r.getColumn(4).getString()),
+                                               "yyyy-MM-dd hh:mm:ss"),
+            .updatedAt = QDateTime::fromString(QString::fromStdString(r.getColumn(5).getString()),
+                                               "yyyy-MM-dd hh:mm:ss")
+        });
+        return note;
     }
 
     Space::Space(const QSharedPointer<SQLite::Database>& in_file) : file(in_file)
