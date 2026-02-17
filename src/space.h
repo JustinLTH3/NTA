@@ -5,6 +5,7 @@
 
 namespace NTA
 {
+    struct Note;
     constexpr unsigned long applicationId = 0x4E5441;
 
     class Space
@@ -23,6 +24,8 @@ namespace NTA
         static Space* openExistingSpace(const QString& path);
         ~Space();
         QSharedPointer<SQLite::Database> getFile() { return file; }
+
+        QSharedPointer<Note> createNote(int64_t typeId = 1, const QString& title = "New note");
 
     protected:
         explicit Space(const QSharedPointer<SQLite::Database>& in_file);
