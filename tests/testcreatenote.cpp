@@ -2,6 +2,7 @@
 
 #include "../src/space.h"
 #include "../src/note.h"
+#include "testcreatenote.moc"
 
 void TestCreateNote::init()
 {
