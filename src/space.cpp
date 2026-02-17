@@ -216,6 +216,16 @@ namespace NTA
 
     QSharedPointer<Note> Space::createNote(const int64_t typeId, const QString& title)
     {
+        //Check typeId exist in table
+        {
+            SQLite::Statement statement(*file, "SELECT * FROM note_type WHERE id = ?");
+            statement.bind(1, typeId);
+            if (!statement.executeStep())
+            {
+                spdlog::error("typeId {} not exist", typeId);
+                return nullptr;
+            }
+        }
         SQLite::Statement statement(*file, "INSERT INTO notes (id, title, body, typeId) VALUES (null, ?, null, ?)");
 
         statement.bind(1, title.toStdString());

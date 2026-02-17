@@ -56,9 +56,6 @@ void TestCreateNote::createNoteWithInvalidTypeIdTest()
 {
     auto note = space->createNote(3);
     QVERIFY(note == nullptr);
-    SQLite::Statement query(*space->getFile(), "SELECT * FROM notes WHERE id = ?");
-    query.bind(1, note->id);
-    QVERIFY(!query.executeStep());
 }
 
 void TestCreateNote::cleanup()
