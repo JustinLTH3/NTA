@@ -16,6 +16,7 @@ private slots:
     void createNoteWithTitleTest();
     void createNoteWithOtherTypeIdTest();
     void createNoteWithInvalidTypeIdTest();
+    void createNoteWithEmptyTitleTest();
     void cleanup();
 
 private:

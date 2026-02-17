@@ -59,6 +59,13 @@ void TestCreateNote::createNoteWithInvalidTypeIdTest()
     QVERIFY(note == nullptr);
 }
 
+void TestCreateNote::createNoteWithEmptyTitleTest()
+{
+    auto note = space->createNote(1, "");
+    QVERIFY(note != nullptr);
+    QVERIFY(note->title.isEmpty());
+}
+
 void TestCreateNote::cleanup()
 {
     space.reset();
