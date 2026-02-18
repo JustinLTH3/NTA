@@ -26,6 +26,8 @@ namespace NTA
         QSharedPointer<SQLite::Database> getFile() { return file; }
 
         QSharedPointer<Note> createNote(int64_t typeId = 1, const QString& title = "New note");
+        QSharedPointer<Note> getNoteWithId(int64_t id);
+        SQLite::Statement searchNotes(const QString& param);
 
     protected:
         explicit Space(const QSharedPointer<SQLite::Database>& in_file);

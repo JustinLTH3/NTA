@@ -244,6 +244,17 @@ namespace NTA
         return note;
     }
 
+    QSharedPointer<Note> Space::getNoteWithId(int64_t id)
+    {
+        return nullptr;
+    }
+
+    SQLite::Statement Space::searchNotes(const QString& param)
+    {
+        SQLite::Statement statement(*file, "");
+        return statement;
+    }
+
     Space::Space(const QSharedPointer<SQLite::Database>& in_file) : file(in_file)
     {
     }
