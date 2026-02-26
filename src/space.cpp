@@ -268,8 +268,11 @@ namespace NTA
 
     SQLite::Statement Space::searchNotes(const QString& param)
     {
-        SQLite::Statement statement(*file, "");
-        return statement;
+        QString query = R"(SELECT rowid as id FROM notes_fts WHERE notes_fts MATCH '")";
+        query.append(param);
+        query.append(R"("' ORDER BY rank)");
+        SQLite::Statement statement(*file, query.toStdString());
+        return std::move(statement);
     }
 
     Space::Space(const QSharedPointer<SQLite::Database>& in_file) : file(in_file)

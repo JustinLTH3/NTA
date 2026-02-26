@@ -1,5 +1,8 @@
 ﻿#include "testgetnotes.h"
 #include "testgetnotes.moc"
+
+#include <spdlog/spdlog.h>
+
 #include "../src/space.h"
 #include "../src/note.h"
 
@@ -31,20 +34,27 @@ void TestGetNotes::getNonExistingNoteTest()
 
 void TestGetNotes::searchNoteByTextTest()
 {
-    QString title = "Note: ";
+    QString title = "My Note: ";
     QSet<int64_t> notes;
     for (int i = 1; i <= 10; ++i)
     {
         notes.insert(i);
-        space->createNote(1, title + QString::number(i));
+        space->createNote(1, title.append(QString::number(i)));
     }
-    auto query = space->searchNotes(title);
-    while (query.executeStep())
+    try
     {
-        QVERIFY(notes.contains(query.getColumn("id").getInt64()));
-        notes.remove(query.getColumn("id").getInt64());
+        auto query = space->searchNotes("My Note:");
+        while (query.executeStep())
+        {
+            QVERIFY(notes.contains(query.getColumn("id").getInt64()));
+            notes.remove(query.getColumn("id").getInt64());
+        }
+    } catch (std::exception& e)
+    {
+        spdlog::error("{}", e.what());
     }
-    QVERIFY(notes.isEmpty());
+    spdlog::info("{}", notes.count());
+    QVERIFY(notes.count() == 0);
 }
 
 void TestGetNotes::searchNoteBySpecificTextTest()
@@ -54,14 +64,21 @@ void TestGetNotes::searchNoteBySpecificTextTest()
     {
         space->createNote(1, title + QString::number(i));
     }
-    auto query = space->searchNotes("1");
-    int count = 0;
-    while (query.executeStep())
+    try{
+        auto query = space->searchNotes("1");
+        int count = 0;
+        while (query.executeStep())
+        {
+            QVERIFY(query.getColumn("id").getInt64()==1);
+            ++count;
+        }
+
+        QVERIFY(count == 1);
+    }catch (std::exception& e)
     {
-        QVERIFY(query.getColumn("id").getInt64()==1 || query.getColumn("id").getInt64()==10);
-        ++count;
+        spdlog::error("{}", e.what());
+        QVERIFY(false);
     }
-    QVERIFY(count == 2);
 }
 
 void TestGetNotes::cleanup()
