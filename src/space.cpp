@@ -246,6 +246,23 @@ namespace NTA
 
     QSharedPointer<Note> Space::getNoteWithId(int64_t id)
     {
+        SQLite::Statement statement(*file, "SELECT * FROM notes WHERE id = ?");
+        statement.bind(1, id);
+        if (statement.executeStep())
+        {
+            auto note = QSharedPointer<Note>(new Note{
+                .id = id, .title = QString::fromStdString(statement.getColumn("title").getString()),
+                .body = QString::fromStdString(statement.getColumn("body").getString()),
+                .typeId = statement.getColumn("typeId").getInt64(),
+                .createdAt = QDateTime::fromString(
+                    QString::fromStdString(statement.getColumn("created_at").getString()),
+                    "yyyy-MM-dd hh:mm:ss"),
+                .updatedAt = QDateTime::fromString(
+                    QString::fromStdString(statement.getColumn("updated_at").getString()),
+                    "yyyy-MM-dd hh:mm:ss")
+            });
+            return note;
+        }
         return nullptr;
     }
 
