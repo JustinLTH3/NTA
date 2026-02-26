@@ -19,6 +19,8 @@ void TestGetNotes::getNoteWithIdTest()
     QVERIFY(note->title == title);
     QVERIFY(note->typeId == 1);
     QVERIFY(note->id == createdNote->id);
+    QVERIFY(note->createdAt.isValid());
+    QVERIFY(note->updatedAt.isValid());
 }
 
 void TestGetNotes::getNonExistingNoteTest()
@@ -43,6 +45,23 @@ void TestGetNotes::searchNoteByTextTest()
         notes.remove(query.getColumn("id").getInt64());
     }
     QVERIFY(notes.isEmpty());
+}
+
+void TestGetNotes::searchNoteBySpecificTextTest()
+{
+    QString title = "Note: ";
+    for (int i = 1; i <= 10; ++i)
+    {
+        space->createNote(1, title + QString::number(i));
+    }
+    auto query = space->searchNotes("1");
+    int count = 0;
+    while (query.executeStep())
+    {
+        QVERIFY(query.getColumn("id").getInt64()==1 || query.getColumn("id").getInt64()==10);
+        ++count;
+    }
+    QVERIFY(count == 2);
 }
 
 void TestGetNotes::cleanup()
