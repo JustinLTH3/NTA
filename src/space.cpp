@@ -73,7 +73,6 @@ namespace NTA
             );
             file->exec(" CREATE TABLE note_links"
                 " ("
-                "     id        INTEGER PRIMARY KEY,"
                 "     source_id INTEGER NOT NULL,"
                 "     target_id INTEGER NOT NULL,"
                 "     description TEXT,"
@@ -82,7 +81,8 @@ namespace NTA
                 "         ON UPDATE CASCADE,"
                 "     FOREIGN KEY (target_id) REFERENCES notes (id)"
                 "         ON DELETE CASCADE"
-                "         ON UPDATE CASCADE"
+                "         ON UPDATE CASCADE,"
+                "     PRIMARY KEY (source_id, target_id)"
                 " );"
             );
             file->exec(" CREATE TABLE boards"
