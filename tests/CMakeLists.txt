@@ -17,6 +17,8 @@ add_executable(NTA_Test
         ../src/Note.h
         testcreatenote.cpp
         testcreatenote.h
+        testgetnotes.cpp
+        testgetnotes.h
 )
 target_link_libraries(NTA_Test
         Qt::Core
