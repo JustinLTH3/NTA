@@ -17,6 +17,7 @@ private slots:
     void getNonExistingNoteTest();
     void searchNoteByTextTest();
     void searchNoteBySpecificTextTest();
+    void searchNoteByEmptyTextTest();
     void cleanup();
 
 private:

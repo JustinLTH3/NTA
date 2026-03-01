@@ -268,6 +268,7 @@ namespace NTA
 
     SQLite::Statement Space::searchNotes(const QString& param)
     {
+        if (param.isEmpty())return {*file, "SELECT rowid as id FROM notes_fts ORDER BY rank"};
         QString query = R"(SELECT rowid as id FROM notes_fts WHERE notes_fts MATCH '")";
         query.append(param);
         query.append(R"("' ORDER BY rank)");

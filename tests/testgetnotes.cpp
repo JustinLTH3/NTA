@@ -39,11 +39,11 @@ void TestGetNotes::searchNoteByTextTest()
     for (int i = 1; i <= 10; ++i)
     {
         notes.insert(i);
-        space->createNote(1, title.append(QString::number(i)));
+        space->createNote(1, title + QString::number(i));
     }
     try
     {
-        auto query = space->searchNotes("My Note:");
+        auto query = space->searchNotes(title);
         while (query.executeStep())
         {
             QVERIFY(notes.contains(query.getColumn("id").getInt64()));
@@ -53,7 +53,6 @@ void TestGetNotes::searchNoteByTextTest()
     {
         spdlog::error("{}", e.what());
     }
-    spdlog::info("{}", notes.count());
     QVERIFY(notes.count() == 0);
 }
 
@@ -64,7 +63,8 @@ void TestGetNotes::searchNoteBySpecificTextTest()
     {
         space->createNote(1, title + QString::number(i));
     }
-    try{
+    try
+    {
         auto query = space->searchNotes("1");
         int count = 0;
         while (query.executeStep())
@@ -74,10 +74,31 @@ void TestGetNotes::searchNoteBySpecificTextTest()
         }
 
         QVERIFY(count == 1);
-    }catch (std::exception& e)
+    } catch (std::exception& e)
     {
         spdlog::error("{}", e.what());
         QVERIFY(false);
+    }
+}
+
+void TestGetNotes::searchNoteByEmptyTextTest()
+{
+    for (int i = 1; i <= 10; ++i)
+    {
+        space->createNote(1, QString::number(i));
+    }
+    try
+    {
+        auto query = space->searchNotes("");
+        int count = 0;
+        while (query.executeStep())
+        {
+            ++count;
+        }
+        QVERIFY(count == 10);
+    } catch (std::exception& e)
+    {
+        spdlog::error("{}", e.what());
     }
 }
 
