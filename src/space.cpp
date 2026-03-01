@@ -276,6 +276,14 @@ namespace NTA
         return std::move(statement);
     }
 
+    bool Space::addLink(int64_t from, int64_t to)
+    {
+        SQLite::Statement statement(*file, "INSERT OR IGNORE INTO note_links (source_id, target_id) VALUES (?, ?)");
+        statement.bind(1, from);
+        statement.bind(2, to);
+        return statement.exec();
+    }
+
     Space::Space(const QSharedPointer<SQLite::Database>& in_file) : file(in_file)
     {
     }
