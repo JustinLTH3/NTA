@@ -14,6 +14,10 @@ class TestAddLink : public QObject
 private slots:
     void init();
     void addLinkTest();
+    void addAlreadyExistingLinkTest();
+    void addLinkToNonExistingNoteTest();
+    void addReverseLinkTest();
+    void addLinkToSelfTest();
     void cleanup();
 
 private:

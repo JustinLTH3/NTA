@@ -278,6 +278,12 @@ namespace NTA
 
     bool Space::addLink(int64_t from, int64_t to)
     {
+        if (from == to)return false;
+        SQLite::Statement check(*file, "SELECT id FROM notes WHERE id = ? OR id = ?");
+        check.bind(1, from);
+        check.bind(2, to);
+        if (!check.executeStep())return false;
+        if (!check.executeStep())return false;
         SQLite::Statement statement(*file, "INSERT OR IGNORE INTO note_links (source_id, target_id) VALUES (?, ?)");
         statement.bind(1, from);
         statement.bind(2, to);
