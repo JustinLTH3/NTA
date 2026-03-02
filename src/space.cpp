@@ -73,7 +73,6 @@ namespace NTA
             );
             file->exec(" CREATE TABLE note_links"
                 " ("
-                "     id        INTEGER PRIMARY KEY,"
                 "     source_id INTEGER NOT NULL,"
                 "     target_id INTEGER NOT NULL,"
                 "     description TEXT,"
@@ -82,7 +81,8 @@ namespace NTA
                 "         ON UPDATE CASCADE,"
                 "     FOREIGN KEY (target_id) REFERENCES notes (id)"
                 "         ON DELETE CASCADE"
-                "         ON UPDATE CASCADE"
+                "         ON UPDATE CASCADE,"
+                "     PRIMARY KEY (source_id, target_id)"
                 " );"
             );
             file->exec(" CREATE TABLE boards"
@@ -274,6 +274,20 @@ namespace NTA
         query.append(R"("' ORDER BY rank)");
         SQLite::Statement statement(*file, query.toStdString());
         return std::move(statement);
+    }
+
+    bool Space::addLink(int64_t from, int64_t to)
+    {
+        if (from == to)return false;
+        SQLite::Statement check(*file, "SELECT id FROM notes WHERE id = ? OR id = ?");
+        check.bind(1, from);
+        check.bind(2, to);
+        if (!check.executeStep())return false;
+        if (!check.executeStep())return false;
+        SQLite::Statement statement(*file, "INSERT OR IGNORE INTO note_links (source_id, target_id) VALUES (?, ?)");
+        statement.bind(1, from);
+        statement.bind(2, to);
+        return statement.exec();
     }
 
     Space::Space(const QSharedPointer<SQLite::Database>& in_file) : file(in_file)

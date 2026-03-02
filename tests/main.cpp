@@ -1,5 +1,6 @@
 ﻿#include "createspacetest.h"
 #include "openspacetest.h"
+#include "testaddlink.h"
 #include "testcreatenote.h"
 #include "testgetnotes.h"
 
@@ -13,5 +14,7 @@ int main(int argc, char* argv[])
     QTest::qExec(&test3, argc, argv);
     TestGetNotes test4;
     QTest::qExec(&test4, argc, argv);
+    TestAddLink test5;
+    QTest::qExec(&test5, argc, argv);
     return 0;
 }
