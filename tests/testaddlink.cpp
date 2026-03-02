@@ -54,3 +54,17 @@ void TestAddLink::addLinkToSelfTest()
 {
     QVERIFY(!space->addLink(1, 1));
 }
+
+void TestAddLink::addMultipleLinksFromSameSourceTest()
+{
+    QVERIFY(space->addLink(1, 2));
+    QVERIFY(space->addLink(1, 3));
+    QVERIFY(space->addLink(1, 4));
+}
+
+void TestAddLink::addMultipleLinksToSameTargetTest()
+{
+    QVERIFY(space->addLink(1, 2));
+    QVERIFY(space->addLink(3, 2));
+    QVERIFY(space->addLink(4, 2));
+}

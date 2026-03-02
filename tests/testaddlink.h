@@ -18,6 +18,8 @@ private slots:
     void addLinkToNonExistingNoteTest();
     void addReverseLinkTest();
     void addLinkToSelfTest();
+    void addMultipleLinksFromSameSourceTest();
+    void addMultipleLinksToSameTargetTest();
     void cleanup();
 
 private:
