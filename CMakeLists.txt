@@ -27,7 +27,10 @@ add_library(fts5_icu STATIC
 add_executable(NTA src/main.cpp
         src/space.cpp
         src/space.h
-        src/Note.h)
+        src/Note.h
+        src/nstartwindow.cpp
+        src/nstartwindow.h
+        src/nstartwindow.ui)
 target_link_libraries(NTA
         Qt::Core
         Qt::Gui

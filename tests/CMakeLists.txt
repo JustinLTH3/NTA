@@ -21,6 +21,9 @@ add_executable(NTA_Test
         testgetnotes.h
         testaddlink.cpp
         testaddlink.h
+        ../src/nstartwindow.cpp
+        ../src/nstartwindow.h
+        ../src/nstartwindow.ui
 )
 target_link_libraries(NTA_Test
         Qt::Core
