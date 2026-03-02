@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 
 #include "ncreatespacedialog.h"
+#include "space.h"
 
 namespace NTA
 {
@@ -13,7 +14,16 @@ namespace NTA
         connect(ui->createBtn, &QPushButton::clicked, this, [this]()
         {
             NCreateSpaceDialog dialog(this);
-            dialog.exec();
+            if (dialog.exec())
+            {
+                QSharedPointer<Space> space(Space::createSpace(dialog.getPath(), dialog.getSpaceName()+".nta"));
+                if (space)
+                {
+                    spdlog::info("create space success");
+                    //Open main window
+                    this->close();
+                }
+            }
         });
     }
 
