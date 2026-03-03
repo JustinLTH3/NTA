@@ -13,6 +13,7 @@ class StartWindowTest : public QObject
 private slots:
     void init();
     void createSpaceTest();
+    void createSpaceWhenFailTest();
     void cleanup();
 
 private:

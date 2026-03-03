@@ -49,7 +49,7 @@ void CreateSpaceDialogTest::createSpaceDialogWhenDirIsEmptyTest()
     QTest::keyClick(dirEdit, Qt::Key_Backspace);
     auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
     QSignalSpy acceptSpy(dialog, &QDialog::accepted);
-    QTimer::singleShot(1000, [=]()
+    QTimer::singleShot(0, [=]()
     {
         QWidget* widget = QApplication::activeModalWidget();
         if (widget)
@@ -68,7 +68,7 @@ void CreateSpaceDialogTest::createSpaceDialogWhenDirNotExistTest()
     QTest::keyClicks(dirEdit, QDir::currentPath() + "/NotExist/");
     auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
     QSignalSpy acceptSpy(dialog, &QDialog::accepted);
-    QTimer::singleShot(1000, [=]()
+    QTimer::singleShot(0, [=]()
     {
         QWidget* widget = QApplication::activeModalWidget();
         if (widget)
@@ -88,7 +88,7 @@ void CreateSpaceDialogTest::createSpaceDialogWhenAlreadyExistTest()
     QTest::keyClicks(dirEdit, QDir::currentPath());
     auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
     QSignalSpy acceptSpy(dialog, &QDialog::accepted);
-    QTimer::singleShot(1000, [=]()
+    QTimer::singleShot(0, [=]()
     {
         QWidget* widget = QApplication::activeModalWidget();
         if (widget)

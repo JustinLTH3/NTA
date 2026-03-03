@@ -3,7 +3,6 @@
 #include <QtWidgets>
 
 
-#include "createspacedialogtest.moc"
 namespace NTA
 {
     class NCreateSpaceDialog;
@@ -21,6 +20,7 @@ private slots:
     void createSpaceDialogWhenDirNotExistTest();
     void createSpaceDialogWhenAlreadyExistTest();
     void cleanup();
+
 private:
     QPointer<NTA::NCreateSpaceDialog> dialog;
 };
