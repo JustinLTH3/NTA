@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "ui_NCreateSpaceDialog.h"
 
@@ -14,7 +15,21 @@ namespace NTA
         ui->lineEdit->setText("space");
         ui->lineEdit->setFocus();
 
-        connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+        connect(ui->buttonBox, &QDialogButtonBox::accepted, this, [this]()
+        {
+            QDir dir(ui->dirEdit->text());
+            if (!dir.exists())
+            {
+                QMessageBox::warning(this, tr("Warning"), tr("Directory not exist"));
+                return;
+            }
+            if (dir.exists(ui->lineEdit->text() + ".nta"))
+            {
+                QMessageBox::warning(this, tr("Warning"), tr("Space already exist"));
+                return;
+            }
+            this->accept();
+        });
         connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
         connect(ui->findBtn, &QPushButton::clicked, this, [this]()
         {
