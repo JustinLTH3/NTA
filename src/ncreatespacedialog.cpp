@@ -18,7 +18,7 @@ namespace NTA
         connect(ui->buttonBox, &QDialogButtonBox::accepted, this, [this]()
         {
             QDir dir(ui->dirEdit->text());
-            if (!dir.exists())
+            if (!dir.exists() || ui->dirEdit->text().isEmpty())
             {
                 QMessageBox::warning(this, tr("Warning"), tr("Directory not exist"));
                 return;
