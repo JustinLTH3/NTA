@@ -29,6 +29,8 @@ add_executable(NTA_Test
         ../src/ncreatespacedialog.ui
         createspacedialogtest.cpp
         createspacedialogtest.h
+        startwindowtest.cpp
+        startwindowtest.h
 )
 target_link_libraries(NTA_Test
         Qt::Core
