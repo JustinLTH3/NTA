@@ -17,7 +17,9 @@ private slots:
     void initTestCase();
     void init();
     void createSpaceDialogTest();
+    void createSpaceDialogWhenDirIsEmptyTest();
     void createSpaceDialogWhenDirNotExistTest();
+    void createSpaceDialogWhenAlreadyExistTest();
     void cleanup();
 private:
     QPointer<NTA::NCreateSpaceDialog> dialog;

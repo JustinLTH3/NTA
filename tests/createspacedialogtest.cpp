@@ -8,6 +8,8 @@
 #include <QLineEdit>
 #include <spdlog/spdlog.h>
 
+#include "../src/space.h"
+
 void CreateSpaceDialogTest::initTestCase()
 {
 }
@@ -34,9 +36,27 @@ void CreateSpaceDialogTest::createSpaceDialogTest()
     QVERIFY(dirEdit->text() == QDir::currentPath());
     auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
     QVERIFY(buttonBox != nullptr);
-    QSignalSpy acceptSpy(buttonBox, &QDialogButtonBox::accepted);
+    QSignalSpy acceptSpy(dialog, &QDialog::accepted);
     QTest::mouseClick(qobject_cast<QWidget*>(buttonBox->button(QDialogButtonBox::Ok)), Qt::LeftButton);
     QVERIFY(acceptSpy.count() == 1);
+}
+
+void CreateSpaceDialogTest::createSpaceDialogWhenDirIsEmptyTest()
+{
+    auto dirEdit = dialog->findChild<QLineEdit*>("dirEdit");
+    QVERIFY(dirEdit != nullptr);
+    QTest::keyClick(dirEdit, Qt::Key_A, Qt::ControlModifier); // Ctrl+A
+    QTest::keyClick(dirEdit, Qt::Key_Backspace);
+    auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+    QSignalSpy acceptSpy(dialog, &QDialog::accepted);
+    QTimer::singleShot(1000, [=]()
+    {
+        QWidget* widget = QApplication::activeModalWidget();
+        if (widget)
+            widget->close();
+    });
+    QTest::mouseClick(qobject_cast<QWidget*>(buttonBox->button(QDialogButtonBox::Ok)), Qt::LeftButton);
+    QVERIFY(acceptSpy.count() == 0);
 }
 
 void CreateSpaceDialogTest::createSpaceDialogWhenDirNotExistTest()
@@ -45,9 +65,10 @@ void CreateSpaceDialogTest::createSpaceDialogWhenDirNotExistTest()
     QVERIFY(dirEdit != nullptr);
     QTest::keyClick(dirEdit, Qt::Key_A, Qt::ControlModifier); // Ctrl+A
     QTest::keyClick(dirEdit, Qt::Key_Backspace);
+    QTest::keyClicks(dirEdit, QDir::currentPath() + "/NotExist/");
     auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
     QSignalSpy acceptSpy(dialog, &QDialog::accepted);
-    QTimer::singleShot(50, [=]()
+    QTimer::singleShot(1000, [=]()
     {
         QWidget* widget = QApplication::activeModalWidget();
         if (widget)
@@ -55,4 +76,27 @@ void CreateSpaceDialogTest::createSpaceDialogWhenDirNotExistTest()
     });
     QTest::mouseClick(qobject_cast<QWidget*>(buttonBox->button(QDialogButtonBox::Ok)), Qt::LeftButton);
     QVERIFY(acceptSpy.count() == 0);
+}
+
+void CreateSpaceDialogTest::createSpaceDialogWhenAlreadyExistTest()
+{
+    auto s = NTA::Space::createSpace(QDir::current(), "space.nta");
+    auto dirEdit = dialog->findChild<QLineEdit*>("dirEdit");
+    QVERIFY(dirEdit != nullptr);
+    QTest::keyClick(dirEdit, Qt::Key_A, Qt::ControlModifier); // Ctrl+A
+    QTest::keyClick(dirEdit, Qt::Key_Backspace);
+    QTest::keyClicks(dirEdit, QDir::currentPath());
+    auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+    QSignalSpy acceptSpy(dialog, &QDialog::accepted);
+    QTimer::singleShot(1000, [=]()
+    {
+        QWidget* widget = QApplication::activeModalWidget();
+        if (widget)
+            widget->close();
+    });
+    QTest::mouseClick(qobject_cast<QWidget*>(buttonBox->button(QDialogButtonBox::Ok)), Qt::LeftButton);
+    QVERIFY(acceptSpy.count() == 0);
+    if (s)
+        delete s;
+    QDir::current().remove("space.nta");
 }
