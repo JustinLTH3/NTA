@@ -30,7 +30,10 @@ add_executable(NTA src/main.cpp
         src/Note.h
         src/nstartwindow.cpp
         src/nstartwindow.h
-        src/nstartwindow.ui)
+        src/nstartwindow.ui
+        src/ncreatespacedialog.cpp
+        src/ncreatespacedialog.h
+        src/ncreatespacedialog.ui)
 target_link_libraries(NTA
         Qt::Core
         Qt::Gui
