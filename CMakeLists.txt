@@ -48,6 +48,12 @@ target_link_libraries(NTA SQLite::SQLite3)
 target_link_libraries(NTA SQLiteCpp)
 target_link_libraries(fts5_icu PRIVATE SQLite::SQLite3 ICU::i18n ICU::uc)
 target_link_libraries(NTA fts5_icu)
+
+include_directories(Qt-Advanced-Docking-System)
+target_include_directories(NTA PRIVATE "Qt-Advanced-Docking-System/src")
+add_subdirectory(Qt-Advanced-Docking-System)
+target_link_libraries(NTA qtadvanceddocking-qt6)
+
 target_include_directories(fts5_icu PRIVATE fts5-icu-tokenizer/src)
 
 add_subdirectory(tests)
