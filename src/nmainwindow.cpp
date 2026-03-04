@@ -1,13 +1,22 @@
 ﻿#include "nmainwindow.h"
 #include "ui_NMainWindow.h"
+#include "DockManager.h"
 
-
-NMainWindow::NMainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::NMainWindow)
+namespace NTA
 {
-    ui->setupUi(this);
-}
+    NMainWindow::NMainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::NMainWindow)
+    {
+        ui->setupUi(this);
+        dockManager = new ads::CDockManager();
+        dockContainer = new ads::CDockContainerWidget(dockManager);
+        setCentralWidget(dockContainer);
+        auto dock = dockManager->createDockWidget("Testing Dock");
+        auto f = dockManager->addDockWidgetFloating(dock);
+        f->show();
+    }
 
-NMainWindow::~NMainWindow()
-{
-    delete ui;
-}
+    NMainWindow::~NMainWindow()
+    {
+        delete ui;
+    }
+} // NTA
