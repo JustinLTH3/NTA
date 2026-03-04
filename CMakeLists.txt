@@ -37,6 +37,9 @@ add_executable(NTA src/main.cpp
         src/nmainwindow.cpp
         src/nmainwindow.h
         src/nmainwindow.ui
+        src/nwidget.cpp
+        src/nwidget.h
+        src/nwidget.ui
 )
 target_link_libraries(NTA
         Qt::Core

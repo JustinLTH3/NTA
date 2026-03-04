@@ -1,6 +1,7 @@
 ﻿#include "nmainwindow.h"
 #include "ui_NMainWindow.h"
 #include "DockManager.h"
+#include "nwidget.h"
 
 namespace NTA
 {
@@ -10,9 +11,6 @@ namespace NTA
         dockManager = new ads::CDockManager();
         dockContainer = new ads::CDockContainerWidget(dockManager);
         setCentralWidget(dockContainer);
-        auto dock = dockManager->createDockWidget("Testing Dock");
-        auto f = dockManager->addDockWidgetFloating(dock);
-        f->show();
     }
 
     NMainWindow::~NMainWindow()
