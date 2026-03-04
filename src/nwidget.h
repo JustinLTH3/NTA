@@ -19,8 +19,11 @@ namespace NTA
         Q_OBJECT
 
     public:
-        explicit NWidget(const QString& title, QWidget* parent = nullptr);
+        explicit NWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);
         ~NWidget() override;
+    protected slots:
+        void onFloat(bool isFloating);
+        void togglePin();
 
     private:
         Ui::NWidget* ui;
