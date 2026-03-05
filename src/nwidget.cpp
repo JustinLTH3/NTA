@@ -26,20 +26,20 @@ namespace NTA
     {
         ui->setupUi(this);
         connect(this, &ads::CDockWidget::topLevelChanged, this, &NWidget::onFloat);
-        // auto b = new QPushButton("pin", this);
-        // setTitleBarActions({b});
-        // setWidget(b);
-        setWidget(new QLabel("Testing"));
         auto a = new QAction(tr("pin"), this);
         setTitleBarActions({a});
         connect(a, &QAction::triggered, this, &NWidget::togglePin);
-        // connect(b, &QPushButton::clicked, this, &NWidget::togglePin);
     }
 
     NWidget::~NWidget()
     {
-        spdlog::info("NWidget::~NWidget");
         delete ui;
+    }
+
+    void NWidget::linkNote(const QSharedPointer<Note>& inNote)
+    {
+        note = inNote;
+        isLinked = true;
     }
 
     void NWidget::togglePin()
@@ -54,9 +54,10 @@ namespace NTA
                 w->toggleView(true);
             floatingDockContainer()->show();
             //Delay as sometimes not successfully raise the widget if call immediate.
-            QTimer::singleShot(10, this, [this]()
+            QTimer::singleShot(0, this, [this]()
             {
                 floatingDockContainer()->raise();
+                floatingDockContainer()->activateWindow();
             });
         }
     }

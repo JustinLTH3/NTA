@@ -17,15 +17,6 @@ namespace NTA
         ads::CDockManager::setConfigFlag(ads::CDockManager::AlwaysShowTabs, true);
         dockContainer = new ads::CDockContainerWidget(dockManager);
         setCentralWidget(dockContainer);
-        auto widget = new NWidget(dockManager, "Test");
-        auto f = dockManager->addDockWidgetFloating(widget);
-        f->show();
-        widget = new NWidget(dockManager, "Test2");
-        f = dockManager->addDockWidgetFloating(widget);
-        f->show();
-        widget = new NWidget(dockManager, "Test3");
-        f = dockManager->addDockWidgetFloating(widget);
-        f->show();
     }
 
     NMainWindow::~NMainWindow()
