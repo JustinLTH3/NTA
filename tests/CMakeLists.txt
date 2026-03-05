@@ -37,6 +37,10 @@ add_executable(NTA_Test
         ../src/nwidget.cpp
         ../src/nwidget.h
         ../src/nwidget.ui
+        testnwidget.cpp
+        testnwidget.h
+        NTestWidget.cpp
+        NTestWidget.h
 )
 target_link_libraries(NTA_Test
         Qt::Core
@@ -48,4 +52,5 @@ target_link_libraries(NTA_Test SQLiteCpp)
 target_link_libraries(NTA_Test spdlog::spdlog)
 target_link_libraries(NTA_Test SQLite::SQLite3)
 target_link_libraries(NTA_Test fts5_icu)
+target_link_libraries(NTA_Test qtadvanceddocking-qt6)
 add_test(NAME SpaceTest COMMAND SpaceTest)

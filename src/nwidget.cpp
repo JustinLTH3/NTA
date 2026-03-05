@@ -36,6 +36,16 @@ namespace NTA
         delete ui;
     }
 
+    QSharedPointer<Note> NWidget::getNote() const
+    {
+        return note;
+    }
+
+    bool NWidget::getIsLinked() const
+    {
+        return isLinked;
+    }
+
     void NWidget::linkNote(const QSharedPointer<Note>& inNote)
     {
         note = inNote;

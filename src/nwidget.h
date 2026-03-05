@@ -21,9 +21,10 @@ namespace NTA
 
     public:
         explicit NWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);
-        ~NWidget() override;
+        virtual ~NWidget() override;
 
-        [[nodiscard]] QSharedPointer<Note> getNote() const { return note; };
+        [[nodiscard]] QSharedPointer<Note> getNote() const;
+        [[nodiscard]] bool getIsLinked() const;
         void linkNote(const QSharedPointer<Note>& inNote);
 
     protected:
