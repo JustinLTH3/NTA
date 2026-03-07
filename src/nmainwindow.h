@@ -25,6 +25,12 @@ namespace NTA
         explicit NMainWindow(QWidget* parent = nullptr);
         ~NMainWindow() override;
 
+        QMenu* getFileMenu() const;
+        QMenu* getEditMenu() const;
+        QMenu* getSettingsMenu() const;
+        QMenu* getWindowMenu() const;
+        QMenu* getHelpMenu() const;
+
     protected:
         QPointer<ads::CDockManager> dockManager;
         QPointer<ads::CDockContainerWidget> dockContainer;

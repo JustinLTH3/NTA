@@ -1,5 +1,6 @@
 ﻿#include "nmainwindow.h"
 
+#include <QMenuBar>
 #include <spdlog/spdlog.h>
 
 #include "DockAreaWidget.h"
@@ -22,5 +23,30 @@ namespace NTA
     NMainWindow::~NMainWindow()
     {
         delete ui;
+    }
+
+    QMenu* NMainWindow::getFileMenu() const
+    {
+        return ui->menu_File;
+    }
+
+    QMenu* NMainWindow::getEditMenu() const
+    {
+        return ui->menu_Edit;
+    }
+
+    QMenu* NMainWindow::getSettingsMenu() const
+    {
+        return ui->menu_Settings;
+    }
+
+    QMenu* NMainWindow::getWindowMenu() const
+    {
+        return ui->menu_Window;
+    }
+
+    QMenu* NMainWindow::getHelpMenu() const
+    {
+        return ui->menuHelp;
     }
 } // NTA
