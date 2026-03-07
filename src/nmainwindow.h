@@ -2,28 +2,36 @@
 #define NTA_NMAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPointer>
 
+#include "DockManager.h"
 
-QT_BEGIN_NAMESPACE
-
-namespace Ui
+namespace NTA
 {
-    class NMainWindow;
-}
+    QT_BEGIN_NAMESPACE
 
-QT_END_NAMESPACE
+    namespace Ui
+    {
+        class NMainWindow;
+    }
 
-class NMainWindow : public QMainWindow
-{
-    Q_OBJECT
+    QT_END_NAMESPACE
 
-public:
-    explicit NMainWindow(QWidget* parent = nullptr);
-    ~NMainWindow() override;
+    class NMainWindow : public QMainWindow
+    {
+        Q_OBJECT
 
-private:
-    Ui::NMainWindow* ui;
-};
+    public:
+        explicit NMainWindow(QWidget* parent = nullptr);
+        ~NMainWindow() override;
 
+    protected:
+        QPointer<ads::CDockManager> dockManager;
+        QPointer<ads::CDockContainerWidget> dockContainer;
+
+    private:
+        Ui::NMainWindow* ui;
+    };
+} // NTA
 
 #endif //NTA_NMAINWINDOW_H

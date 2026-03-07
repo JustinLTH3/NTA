@@ -1,13 +1,26 @@
 ﻿#include "nmainwindow.h"
+
+#include <spdlog/spdlog.h>
+
+#include "DockAreaWidget.h"
 #include "ui_NMainWindow.h"
+#include "DockManager.h"
+#include "nwidget.h"
 
-
-NMainWindow::NMainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::NMainWindow)
+namespace NTA
 {
-    ui->setupUi(this);
-}
+    NMainWindow::NMainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::NMainWindow)
+    {
+        ui->setupUi(this);
+        ads::CDockManager::setConfigFlag(ads::CDockManager::FocusHighlighting, true);
+        dockManager = new ads::CDockManager();
+        ads::CDockManager::setConfigFlag(ads::CDockManager::AlwaysShowTabs, true);
+        dockContainer = new ads::CDockContainerWidget(dockManager);
+        setCentralWidget(dockContainer);
+    }
 
-NMainWindow::~NMainWindow()
-{
-    delete ui;
-}
+    NMainWindow::~NMainWindow()
+    {
+        delete ui;
+    }
+} // NTA

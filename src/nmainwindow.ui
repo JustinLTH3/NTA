@@ -3,8 +3,8 @@
     <author/>
     <comment/>
     <exportmacro/>
-    <class>NMainWindow</class>
-    <widget class="QMainWindow" name="NMainWindow">
+    <class>NTA::NMainWindow</class>
+    <widget class="QMainWindow" name="NTA::NMainWindow">
         <property name="geometry">
             <rect>
                 <x>0</x>
