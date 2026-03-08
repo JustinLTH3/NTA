@@ -1,3 +1,6 @@
 [submodule "fts5-icu-tokenizer"]
 	path = fts5-icu-tokenizer
 	url = https://github.com/JustinLTH3/fts5-icu-tokenizer.git
+[submodule "Qt-Advanced-Docking-System"]
+	path = Qt-Advanced-Docking-System
+	url = https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System.git
