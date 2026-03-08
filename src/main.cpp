@@ -1,11 +1,14 @@
 ﻿#include <QApplication>
-#include <QPushButton>
+
+#include "nstartwindow.h"
+#include "nmainwindow.h"
 
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-    QPushButton button("Hello world!", nullptr);
-    button.resize(200, 100);
-    button.show();
+    NTA::NStartWindow startWindow;
+    startWindow.show();
+    NTA::NMainWindow mainWindow;
+    mainWindow.show();
     return QApplication::exec();
 }
