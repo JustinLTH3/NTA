@@ -5,6 +5,7 @@
 
 namespace NTA
 {
+    class Space;
     QT_BEGIN_NAMESPACE
 
     namespace Ui
@@ -21,6 +22,8 @@ namespace NTA
     public:
         explicit NStartWindow(QWidget* parent = nullptr);
         ~NStartWindow() override;
+    signals:
+        void openSpace(QSharedPointer<Space> space);
 
     private:
         Ui::NStartWindow* ui;
