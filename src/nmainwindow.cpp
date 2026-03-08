@@ -7,6 +7,7 @@
 #include "DockAreaWidget.h"
 #include "ui_NMainWindow.h"
 #include "DockManager.h"
+#include "nnoteexplorer.h"
 #include "nwidget.h"
 
 namespace NTA
@@ -29,6 +30,13 @@ namespace NTA
             QMessageBox::about(this, tr("About NTA"),
                                tr(
                                    "NTA is a open source note taking app with Markdown support. Placeholder..................."));
+        });
+
+        getWindowMenu()->addAction("Note Explorer", this, [this]()
+        {
+            spdlog::info("show note explorer");
+            NNoteExplorer* note_explorer = new NNoteExplorer(dockManager, "Note Explorer", this);
+            dockContainer->addDockWidget(ads::AllDockAreas, note_explorer, dockContainer->dockArea(0));
         });
     }
 
