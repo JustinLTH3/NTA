@@ -24,6 +24,21 @@ namespace NTA
                 }
             }
         });
+        connect(ui->openBtn, &QPushButton::clicked, this, [this]()
+                {
+                    QString path = QFileDialog::getOpenFileName(this, tr("Open NTA"), QDir::homePath(),
+                                                                tr("NTA (*.nta)"));
+                    if (!path.isEmpty())
+                    {
+                        QSharedPointer<Space> space(Space::openExistingSpace(path));
+                        if (space)
+                        {
+                            spdlog::info("open space success");
+                            emit openSpace(space);
+                        }
+                    }
+                }
+        );
     }
 
     NStartWindow::~NStartWindow()
