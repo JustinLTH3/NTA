@@ -16,15 +16,29 @@ namespace NTA
             NCreateSpaceDialog dialog(this);
             if (dialog.exec())
             {
-                QSharedPointer<Space> space(Space::createSpace(dialog.getPath(), dialog.getSpaceName()+".nta"));
+                QSharedPointer<Space> space(Space::createSpace(dialog.getPath(), dialog.getSpaceName() + ".nta"));
                 if (space)
                 {
                     spdlog::info("create space success");
-                    //Open main window
-                    this->close();
+                    emit openSpace(space);
                 }
             }
         });
+        connect(ui->openBtn, &QPushButton::clicked, this, [this]()
+                {
+                    QString path = QFileDialog::getOpenFileName(this, tr("Open NTA"), QDir::homePath(),
+                                                                tr("NTA (*.nta)"));
+                    if (!path.isEmpty())
+                    {
+                        QSharedPointer<Space> space(Space::openExistingSpace(path));
+                        if (space)
+                        {
+                            spdlog::info("open space success");
+                            emit openSpace(space);
+                        }
+                    }
+                }
+        );
     }
 
     NStartWindow::~NStartWindow()

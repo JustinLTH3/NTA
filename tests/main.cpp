@@ -1,10 +1,13 @@
 ﻿#include "createspacedialogtest.h"
 #include "createspacetest.h"
 #include "openspacetest.h"
+#include "spacemanagertest.h"
 #include "startwindowtest.h"
 #include "testaddlink.h"
 #include "testcreatenote.h"
 #include "testgetnotes.h"
+#include "testnwidget.h"
+
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
@@ -22,5 +25,9 @@ int main(int argc, char* argv[])
     QTest::qExec(&test6, argc, argv);
     StartWindowTest test7;
     QTest::qExec(&test7, argc, argv);
+    TestNWidget test8;
+    QTest::qExec(&test8, argc, argv);
+    SpaceManagerTest test9;
+    QTest::qExec(&test9, argc, argv);
     return 0;
 }
