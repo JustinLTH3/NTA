@@ -23,7 +23,7 @@ namespace NTA
 
     bool NSpaceManager::createInstance(const QSharedPointer<Space>& in_space)
     {
-        if (!instance)
+        if (!instance && in_space)
         {
             instance = new NSpaceManager(in_space);
             return true;
