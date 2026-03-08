@@ -41,6 +41,8 @@ add_executable(NTA_Test
         testnwidget.h
         NTestWidget.cpp
         NTestWidget.h
+        ../src/nspacemanager.cpp
+        ../src/nspacemanager.h
 )
 target_link_libraries(NTA_Test
         Qt::Core

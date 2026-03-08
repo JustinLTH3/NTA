@@ -40,6 +40,8 @@ add_executable(NTA src/main.cpp
         src/nwidget.cpp
         src/nwidget.h
         src/nwidget.ui
+        src/nspacemanager.cpp
+        src/nspacemanager.h
 )
 target_link_libraries(NTA
         Qt::Core
