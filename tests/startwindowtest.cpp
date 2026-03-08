@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <qtimer.h>
 #include <QLineEdit>
+#include <QSignalSpy>
 
 #include "../src/ncreatespacedialog.h"
 #include "../src/nstartwindow.h"
@@ -23,6 +24,7 @@ void StartWindowTest::createSpaceTest()
 {
     auto createSpaceButton = window->findChild<QPushButton*>("createBtn");
     QVERIFY(createSpaceButton != nullptr);
+    QSignalSpy openSpy(window, &NTA::NStartWindow::openSpace);
     QTimer::singleShot(0, [=, this]()
     {
         auto d = window->findChild<NTA::NCreateSpaceDialog*>();
@@ -38,6 +40,7 @@ void StartWindowTest::createSpaceTest()
     });
     QTest::mouseClick(createSpaceButton, Qt::LeftButton);
     QVERIFY(QDir::current().exists("space.nta"));
+    QVERIFY(openSpy.count() == 1);
     QDir::current().remove("space.nta");
 }
 
@@ -45,6 +48,7 @@ void StartWindowTest::createSpaceWhenFailTest()
 {
     auto createSpaceButton = window->findChild<QPushButton*>("createBtn");
     QVERIFY(createSpaceButton != nullptr);
+    QSignalSpy openSpy(window, &NTA::NStartWindow::openSpace);
     QTimer::singleShot(0, [=, this]()
     {
         auto d = window->findChild<NTA::NCreateSpaceDialog*>();
@@ -67,6 +71,7 @@ void StartWindowTest::createSpaceWhenFailTest()
             qobject_cast<QWidget*>(d->findChild<QDialogButtonBox*>("buttonBox")->button(QDialogButtonBox::Cancel)),
             Qt::LeftButton);
     });
+    QVERIFY(openSpy.count() == 0);
     QTest::mouseClick(createSpaceButton, Qt::LeftButton);
     QVERIFY(!QDir::current().exists("space.nta"));
 }
