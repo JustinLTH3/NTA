@@ -36,7 +36,8 @@ namespace NTA
         {
             spdlog::info("show note explorer");
             NNoteExplorer* note_explorer = new NNoteExplorer(dockManager, "Note Explorer", this);
-            dockContainer->addDockWidget(ads::AllDockAreas, note_explorer, dockContainer->dockArea(0));
+            dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, note_explorer,
+                                         dockContainer->dockArea(0));
         });
     }
 

@@ -7,6 +7,9 @@
 
 #include "nwidget.h"
 
+class QListWidgetItem;
+class QListWidget;
+
 namespace NTA
 {
     class NNoteExplorer : public NWidget
@@ -19,6 +22,11 @@ namespace NTA
 
     protected slots:
         void onFocusNoteChanged(const QSharedPointer<Note>& newNote) override;
+
+    protected:
+        QListWidget* listWidget = nullptr;
+        QMap<QListWidgetItem*, int64_t> items;
+        QMap<int64_t, QListWidgetItem*> ids;
     };
 } // NTA
 
