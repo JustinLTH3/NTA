@@ -102,6 +102,28 @@ void TestGetNotes::searchNoteByEmptyTextTest()
     }
 }
 
+void TestGetNotes::searchNoteWithSpecificColumnTest()
+{
+    QString title = "Note: ";
+    for (int i = 1; i <= 10; ++i)
+    {
+        space->createNote(1, title + QString::number(i));
+    }
+    try
+    {
+        auto query = space->searchNotes(title, NTA::NoteColumn::id | NTA::NoteColumn::title);
+        int count = 0;
+        QVERIFY(query.executeStep());
+        QVERIFY(query.getColumnCount() == 2);
+        QVERIFY(query.getColumn("id").getInt64() == 1);
+        QVERIFY(query.getColumn("title") == title + QString::number(1));
+    } catch (std::exception& e)
+    {
+        spdlog::error("{}", e.what());
+        QVERIFY(false);
+    }
+}
+
 void TestGetNotes::cleanup()
 {
     space.reset();

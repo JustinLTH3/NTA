@@ -287,7 +287,6 @@ namespace NTA
         if (columns & NoteColumn::createdAt)query.append("created_at, ");
         if (columns & NoteColumn::updatedAt)query.append("updated_at, ");
         query.removeAt(query.length() - 2);
-        spdlog::info("{}", query.toStdString());
         if (param.isEmpty())
         {
             query.append(" FROM notes_fts ORDER BY rank");
