@@ -36,18 +36,23 @@ namespace NTA
         {
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(l.getColumn("title").getString()),
                                                         listWidget);
+            items[item] = l.getColumn("id").getInt64();
             listWidget->addItem(item);
         }
         listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
         connect(listWidget, &QListWidget::customContextMenuRequested, this, [this](const QPoint& pos)
         {
-            QPoint item = listWidget->mapToGlobal(pos);
+            QPoint itemP = listWidget->mapToGlobal(pos);
             QMenu submenu;
             submenu.addAction("Delete");
-            QAction* rightClickItem = submenu.exec(item);
+            QAction* rightClickItem = submenu.exec(itemP);
             if (rightClickItem && rightClickItem->text().contains("Delete"))
             {
-                listWidget->takeItem(listWidget->indexAt(pos).row());
+                auto row = listWidget->indexAt(pos).row();
+                auto item = listWidget->item(row);
+                NSpaceManager::getInstance()->getSpace()->deleteNote(items[item]);
+                items.remove(item);
+                delete item;
             }
         });
     }

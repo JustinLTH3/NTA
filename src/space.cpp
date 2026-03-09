@@ -312,6 +312,13 @@ namespace NTA
         return statement.exec();
     }
 
+    bool Space::deleteNote(int64_t id)
+    {
+        SQLite::Statement statement(*file, "DELETE FROM notes WHERE id = ?");
+        statement.bind(1, id);
+        return statement.exec();
+    }
+
     Space::Space(const QSharedPointer<SQLite::Database>& in_file) : file(in_file)
     {
     }

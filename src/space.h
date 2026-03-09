@@ -53,7 +53,7 @@ namespace NTA
          * @return Success or not.
          */
         bool addLink(int64_t from, int64_t to);
-
+        bool deleteNote(int64_t id);
     protected:
         /**
          * It is protected for preventing space initialization other than the static createSpace/openExistingSpace function.
