@@ -27,7 +27,10 @@ namespace NTA
         connect(createNoteBtn, &QPushButton::clicked, this, [this]()
         {
             spdlog::info("create note");
-            NSpaceManager::getInstance()->getSpace()->createNote();
+            auto note = NSpaceManager::getInstance()->getSpace()->createNote();
+            QListWidgetItem* item = new QListWidgetItem(note->title, listWidget);
+            items[item] = note->id;
+            listWidget->addItem(item);
         });
         listWidget = new QListWidget(central);
         central->layout()->addWidget(listWidget);
