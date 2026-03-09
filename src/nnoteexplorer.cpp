@@ -2,6 +2,7 @@
 
 #include <QLineEdit>
 #include <QListWidget>
+#include <QMenu>
 #include <QPointer>
 #include <QVBoxLayout>
 #include <spdlog/spdlog.h>
@@ -30,12 +31,25 @@ namespace NTA
         });
         listWidget = new QListWidget(central);
         central->layout()->addWidget(listWidget);
-        auto l = NSpaceManager::getInstance()->getSpace()->searchNotes("");
+        auto l = NSpaceManager::getInstance()->getSpace()->searchNotes("", NoteColumn::id | NoteColumn::title);
         while (l.executeStep())
         {
-            listWidget->addItem(
-                NSpaceManager::getInstance()->getSpace()->getNoteWithId(l.getColumn("id").getInt64())->title);
+            QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(l.getColumn("title").getString()),
+                                                        listWidget);
+            listWidget->addItem(item);
         }
+        listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(listWidget, &QListWidget::customContextMenuRequested, this, [this](const QPoint& pos)
+        {
+            QPoint item = listWidget->mapToGlobal(pos);
+            QMenu submenu;
+            submenu.addAction("Delete");
+            QAction* rightClickItem = submenu.exec(item);
+            if (rightClickItem && rightClickItem->text().contains("Delete"))
+            {
+                listWidget->takeItem(listWidget->indexAt(pos).row());
+            }
+        });
     }
 
     NNoteExplorer::~NNoteExplorer()
