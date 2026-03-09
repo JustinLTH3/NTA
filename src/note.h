@@ -14,6 +14,16 @@ namespace NTA
         QDateTime createdAt;
         QDateTime updatedAt;
     };
+
+    enum NoteColumn
+    {
+        id = 1 << 0,
+        title = 1 << 1,
+        body = 1 << 2,
+        typeId = 1 << 3,
+        createdAt = 1 << 4,
+        updatedAt = 1 << 5
+    };
 }
 
 #endif //NTA_NOTE_H

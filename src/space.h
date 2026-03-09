@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "note.h"
 #include "QDir"
 #include "SQLiteCpp/SQLiteCpp.h"
 #include "QSharedPointer"
@@ -43,7 +44,9 @@ namespace NTA
          * @param param Text for searching notes that match param. Title and body are considered.
          * @return A sqlite statement for execution. Only contains id and is ordered by rank.
          */
-        SQLite::Statement searchNotes(const QString& param);
+        // SQLite::Statement searchNotes(const QString& param);
+
+        SQLite::Statement searchNotes(const QString& param, unsigned int columns = NoteColumn::id);
         /**
          * @param from The source id of the link.
          * @param to The target id of the link.

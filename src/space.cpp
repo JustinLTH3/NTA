@@ -266,14 +266,37 @@ namespace NTA
         return nullptr;
     }
 
-    SQLite::Statement Space::searchNotes(const QString& param)
+    // SQLite::Statement Space::searchNotes(const QString& param)
+    // {
+    //     if (param.isEmpty())return {*file, "SELECT rowid as id FROM notes_fts ORDER BY rank"};
+    //     QString query = R"(SELECT rowid as id FROM notes_fts WHERE notes_fts MATCH '")";
+    //     query.append(param);
+    //     query.append(R"("' ORDER BY rank)");
+    //     SQLite::Statement statement(*file, query.toStdString());
+    //     return std::move(statement);
+    // }
+
+    SQLite::Statement Space::searchNotes(const QString& param, unsigned int columns)
     {
-        if (param.isEmpty())return {*file, "SELECT rowid as id FROM notes_fts ORDER BY rank"};
-        QString query = R"(SELECT rowid as id FROM notes_fts WHERE notes_fts MATCH '")";
+        Q_ASSERT(columns != 0);
+        QString query = R"(SELECT )";
+        if (columns & NoteColumn::id)query.append("rowid as id, ");
+        if (columns & NoteColumn::title)query.append("title, ");
+        if (columns & NoteColumn::body)query.append("body, ");
+        if (columns & NoteColumn::typeId)query.append("typeId, ");
+        if (columns & NoteColumn::createdAt)query.append("created_at, ");
+        if (columns & NoteColumn::updatedAt)query.append("updated_at, ");
+        query.removeAt(query.length() - 2);
+        spdlog::info("{}", query.toStdString());
+        if (param.isEmpty())
+        {
+            query.append(" FROM notes_fts ORDER BY rank");
+            return {*file, query.toStdString()};
+        }
+        query.append(R"(FROM notes_fts WHERE notes_fts MATCH '")");
         query.append(param);
         query.append(R"("' ORDER BY rank)");
-        SQLite::Statement statement(*file, query.toStdString());
-        return std::move(statement);
+        return {*file, query.toStdString()};
     }
 
     bool Space::addLink(int64_t from, int64_t to)
