@@ -78,7 +78,16 @@ namespace NTA
     {
     }
 
-    void NNoteExplorer::onFocusNoteChanged(const QSharedPointer<Note>& newNote)
+    void NNoteExplorer::linkNote(const QSharedPointer<Note>& inNote, bool linked)
+    {
+    }
+
+
+    void NNoteExplorer::setNote(const QSharedPointer<Note>& inNote)
+    {
+    }
+
+    void NNoteExplorer::onFocusNoteChanged(int64_t old, int64_t now)
     {
     }
 } // NTA

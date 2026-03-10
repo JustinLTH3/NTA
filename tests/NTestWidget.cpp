@@ -13,6 +13,6 @@ NTestWidget::NTestWidget(ads::CDockManager* dockManager, const QString& title, Q
     setWidget(new QLabel(tr("NTestWidget"), this));
 }
 
-void NTestWidget::onFocusNoteChanged(const QSharedPointer<NTA::Note>& newNote)
+void NTestWidget::onFocusNoteChanged(int64_t old, int64_t now)
 {
 }

@@ -71,11 +71,14 @@ namespace NTA
             .updatedAt = QDateTime::fromString(QString::fromStdString(r.getColumn(5).getString()),
                                                "yyyy-MM-dd hh:mm:ss")
         });
+        cachedNotes[note->id] = note;
         return note;
     }
 
     QSharedPointer<Note> NNoteManager::getNoteWithId(int64_t id)
     {
+        if (cachedNotes.contains(id) && cachedNotes[id])return cachedNotes[id];
+        if (id < 0)return nullptr;
         auto file = space->getFile();
         SQLite::Statement statement(*file, "SELECT * FROM notes WHERE id = ?");
         statement.bind(1, id);
@@ -92,6 +95,7 @@ namespace NTA
                     QString::fromStdString(statement.getColumn("updated_at").getString()),
                     "yyyy-MM-dd hh:mm:ss")
             });
+            cachedNotes[id] = note;
             return note;
         }
         return nullptr;

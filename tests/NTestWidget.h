@@ -21,5 +21,5 @@ public:
 
 protected
 slots :
-    void onFocusNoteChanged(const QSharedPointer<NTA::Note>& newNote) override;
+    void onFocusNoteChanged(int64_t old, int64_t now) override;
 };

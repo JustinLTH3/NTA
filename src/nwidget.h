@@ -26,7 +26,8 @@ namespace NTA
 
         [[nodiscard]] QSharedPointer<Note> getNote() const;
         [[nodiscard]] bool getIsLinked() const;
-        void linkNote(const QSharedPointer<Note>& inNote);
+        virtual void linkNote(const QSharedPointer<Note>& inNote, bool linked = true);
+        virtual void setNote(const QSharedPointer<Note>& inNote);
 
     protected:
         QSharedPointer<Note> note;
@@ -36,10 +37,7 @@ namespace NTA
     protected slots:
         void onFloat(bool isFloating);
         void togglePin();
-        /**
-         * @param newNote The new focusing note
-         */
-        virtual void onFocusNoteChanged(const QSharedPointer<Note>& newNote) = 0;
+        virtual void onFocusNoteChanged(int64_t old, int64_t now) = 0;
 
     private:
         Ui::NWidget* ui;

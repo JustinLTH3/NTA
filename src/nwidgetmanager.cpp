@@ -40,7 +40,9 @@ namespace NTA
                     auto n = qobject_cast<NWidget*>(now);
                     if (!n)
                         return;
+                    if (currentNoteId == n->note->id) return;
                     emit currentFocusedNoteChanged(currentNoteId, n->note->id);
+                    currentNoteId = n->note->id;
                 });
     }
 
@@ -51,7 +53,7 @@ namespace NTA
     void NWidgetManager::removeWidget(NWidget* widget)
     {
         widgets[widget->typeName].removeAll(widget);
-        spdlog::info(widget->typeName.toStdString());
+        widget->deleteLater();
     }
 
     QPointer<NWidgetManager> NWidgetManager::instance = nullptr;
