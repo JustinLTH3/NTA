@@ -4,15 +4,19 @@
 #include "../src/note.h"
 #include "testcreatenote.moc"
 
+#include "../src/nspacemanager.h"
+
 void TestCreateNote::init()
 {
+    QDir::current().remove("test.db");
     space.reset(NTA::Space::createSpace(QDir::current(), "test.db"));
+    NTA::NNoteManager::createInstance(space);
     QVERIFY(space != nullptr);
 }
 
 void TestCreateNote::createDefaultNoteTest()
 {
-    auto note = space->createNote();
+    auto note = NTA::NNoteManager::getInstance()->createNote();
     QVERIFY(note != nullptr);
     QVERIFY(note->typeId == 1);
     QVERIFY(note->title == "New note");
@@ -29,7 +33,7 @@ void TestCreateNote::createDefaultNoteTest()
 
 void TestCreateNote::createNoteWithTitleTest()
 {
-    auto note = space->createNote(1, "Other Title");
+    auto note = NTA::NNoteManager::getInstance()->createNote(1, "Other Title");
     QVERIFY(note != nullptr);
     QVERIFY(note->typeId == 1);
     QVERIFY(note->title == "Other Title");
@@ -45,7 +49,7 @@ void TestCreateNote::createNoteWithTitleTest()
 
 void TestCreateNote::createNoteWithOtherTypeIdTest()
 {
-    auto note = space->createNote(2);
+    auto note = NTA::NNoteManager::getInstance()->createNote(2);
     QVERIFY(note != nullptr);
     QVERIFY(note->typeId == 2);
     SQLite::Statement query(*space->getFile(), "SELECT * FROM notes WHERE id = ?");
@@ -55,19 +59,20 @@ void TestCreateNote::createNoteWithOtherTypeIdTest()
 
 void TestCreateNote::createNoteWithInvalidTypeIdTest()
 {
-    auto note = space->createNote(3);
+    auto note = NTA::NNoteManager::getInstance()->createNote(3);
     QVERIFY(note == nullptr);
 }
 
 void TestCreateNote::createNoteWithEmptyTitleTest()
 {
-    auto note = space->createNote(1, "");
+    auto note = NTA::NNoteManager::getInstance()->createNote(1, "");
     QVERIFY(note != nullptr);
     QVERIFY(note->title.isEmpty());
 }
 
 void TestCreateNote::cleanup()
 {
+    NTA::NNoteManager::destroyInstance();
     space.reset();
     QDir::current().remove("test.db");
 }

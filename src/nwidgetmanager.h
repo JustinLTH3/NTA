@@ -33,7 +33,7 @@ namespace NTA
         void removeWidget(NWidget* widget);
         static QPointer<NWidgetManager> instance;
         QPointer<ads::CDockManager> dockManager;
-        int64_t id = -1;
+        int64_t currentNoteId = -1;
     };
 
     template<typename T>

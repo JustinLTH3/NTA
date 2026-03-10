@@ -28,14 +28,14 @@ namespace NTA
         connect(createNoteBtn, &QPushButton::clicked, this, [this]()
         {
             spdlog::info("create note");
-            auto note = NSpaceManager::getInstance()->getSpace()->createNote();
+            auto note = NNoteManager::getInstance()->createNote();
             QListWidgetItem* item = new QListWidgetItem(note->title, listWidget);
             items[item] = note->id;
             listWidget->addItem(item);
         });
         listWidget = new QListWidget(central);
         central->layout()->addWidget(listWidget);
-        auto l = NSpaceManager::getInstance()->getSpace()->searchNotes("", NoteColumn::id | NoteColumn::title);
+        auto l = NNoteManager::getInstance()->searchNotes("", NoteColumn::id | NoteColumn::title);
         while (l.executeStep())
         {
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(l.getColumn("title").getString()),
@@ -54,7 +54,7 @@ namespace NTA
             {
                 auto row = listWidget->indexAt(pos).row();
                 auto item = listWidget->item(row);
-                NSpaceManager::getInstance()->getSpace()->deleteNote(items[item]);
+                NNoteManager::getInstance()->getSpace()->deleteNote(items[item]);
                 items.remove(item);
                 delete item;
             }
@@ -62,7 +62,7 @@ namespace NTA
 
         connect(searchBar, &QLineEdit::textChanged, this, [this](const QString& text)
         {
-            auto l = NSpaceManager::getInstance()->getSpace()->searchNotes(text, NoteColumn::id | NoteColumn::title);
+            auto l = NNoteManager::getInstance()->searchNotes(text, NoteColumn::id | NoteColumn::title);
             listWidget->clear();
             while (l.executeStep())
             {

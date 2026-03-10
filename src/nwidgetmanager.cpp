@@ -5,6 +5,7 @@
 #include "nwidgetmanager.h"
 
 #include <QPointer>
+#include "note.h"
 #include "DockManager.h"
 
 namespace NTA
@@ -33,6 +34,14 @@ namespace NTA
     NWidgetManager::NWidgetManager(const QPointer<ads::CDockManager>& dockManager, QObject* parent) : QObject(parent),
         dockManager(dockManager)
     {
+        connect(dockManager, &ads::CDockManager::focusedDockWidgetChanged, this, [this](ads::CDockWidget* old,
+            ads::CDockWidget* now)
+                {
+                    auto n = qobject_cast<NWidget*>(now);
+                    if (!n)
+                        return;
+                    emit currentFocusedNoteChanged(currentNoteId, n->note->id);
+                });
     }
 
     NWidgetManager::~NWidgetManager()

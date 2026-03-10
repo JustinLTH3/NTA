@@ -5,18 +5,20 @@
 
 #include "../src/space.h"
 #include "../src/note.h"
+#include "../src/nspacemanager.h"
 
 void TestGetNotes::init()
 {
     space.reset(NTA::Space::createSpace(QDir::current(), "test.db"));
+    NTA::NNoteManager::createInstance(space);
     QVERIFY(space != nullptr);
 }
 
 void TestGetNotes::getNoteWithIdTest()
 {
     QString title = "First note";
-    auto createdNote = space->createNote(1, title);
-    auto note = space->getNoteWithId(createdNote->id);
+    auto createdNote = NTA::NNoteManager::getInstance()->createNote(1, title);
+    auto note = NTA::NNoteManager::getInstance()->getNoteWithId(createdNote->id);
 
     QVERIFY(note != nullptr);
     QVERIFY(note->title == title);
@@ -28,7 +30,7 @@ void TestGetNotes::getNoteWithIdTest()
 
 void TestGetNotes::getNonExistingNoteTest()
 {
-    auto note = space->getNoteWithId(100);
+    auto note = NTA::NNoteManager::getInstance()->getNoteWithId(100);
     QVERIFY(note == nullptr);
 }
 
@@ -39,11 +41,11 @@ void TestGetNotes::searchNoteByTextTest()
     for (int i = 1; i <= 10; ++i)
     {
         notes.insert(i);
-        space->createNote(1, title + QString::number(i));
+        NTA::NNoteManager::getInstance()->createNote(1, title + QString::number(i));
     }
     try
     {
-        auto query = space->searchNotes(title);
+        auto query = NTA::NNoteManager::getInstance()->searchNotes(title);
         while (query.executeStep())
         {
             QVERIFY(notes.contains(query.getColumn("id").getInt64()));
@@ -61,11 +63,11 @@ void TestGetNotes::searchNoteBySpecificTextTest()
     QString title = "Note: ";
     for (int i = 1; i <= 10; ++i)
     {
-        space->createNote(1, title + QString::number(i));
+        NTA::NNoteManager::getInstance()->createNote(1, title + QString::number(i));
     }
     try
     {
-        auto query = space->searchNotes("1");
+        auto query = NTA::NNoteManager::getInstance()->searchNotes("1");
         int count = 0;
         while (query.executeStep())
         {
@@ -85,11 +87,11 @@ void TestGetNotes::searchNoteByEmptyTextTest()
 {
     for (int i = 1; i <= 10; ++i)
     {
-        space->createNote(1, QString::number(i));
+        NTA::NNoteManager::getInstance()->createNote(1, QString::number(i));
     }
     try
     {
-        auto query = space->searchNotes("");
+        auto query = NTA::NNoteManager::getInstance()->searchNotes("");
         int count = 0;
         while (query.executeStep())
         {
@@ -107,11 +109,11 @@ void TestGetNotes::searchNoteWithSpecificColumnTest()
     QString title = "Note: ";
     for (int i = 1; i <= 10; ++i)
     {
-        space->createNote(1, title + QString::number(i));
+        NTA::NNoteManager::getInstance()->createNote(1, title + QString::number(i));
     }
     try
     {
-        auto query = space->searchNotes(title, NTA::NoteColumn::id | NTA::NoteColumn::title);
+        auto query = NTA::NNoteManager::getInstance()->searchNotes(title, NTA::NoteColumn::id | NTA::NoteColumn::title);
         int count = 0;
         QVERIFY(query.executeStep());
         QVERIFY(query.getColumnCount() == 2);
@@ -127,5 +129,6 @@ void TestGetNotes::searchNoteWithSpecificColumnTest()
 void TestGetNotes::cleanup()
 {
     space.reset();
+    NTA::NNoteManager::destroyInstance();
     QDir::current().remove("test.db");
 }

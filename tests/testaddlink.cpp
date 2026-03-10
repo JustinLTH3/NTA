@@ -3,21 +3,31 @@
 //
 
 #include "testaddlink.h"
+
+#include <spdlog/spdlog.h>
+
+#include "../src/nspacemanager.h"
 #include "../src/space.h"
 
 void TestAddLink::init()
 {
+    space.reset();
+    QDir::current().remove("test.db");
     space.reset(NTA::Space::createSpace(QDir::current(), "test.db"));
+    NTA::NNoteManager::createInstance(space);
     QVERIFY(space != nullptr);
     for (int i = 1; i <= 10; ++i)
     {
-        space->createNote(1, QString::number(i));
+        NTA::NNoteManager::getInstance()->createNote(1, QString::number(i));
     }
 }
 
 void TestAddLink::cleanup()
 {
-    space.reset();
+    {
+        NTA::NNoteManager::destroyInstance();
+        space.reset();
+    }
     QDir::current().remove("test.db");
 }
 
