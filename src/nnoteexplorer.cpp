@@ -21,7 +21,8 @@ namespace NTA
         auto central = new QWidget(this);
         setWidget(central);
         central->setLayout(new QVBoxLayout(central));
-        central->layout()->addWidget(new QLineEdit(central));
+        auto searchBar = new QLineEdit(central);
+        central->layout()->addWidget(searchBar);
         auto createNoteBtn = new QPushButton("Create Note", central);
         central->layout()->addWidget(createNoteBtn);
         connect(createNoteBtn, &QPushButton::clicked, this, [this]()
@@ -56,6 +57,19 @@ namespace NTA
                 NSpaceManager::getInstance()->getSpace()->deleteNote(items[item]);
                 items.remove(item);
                 delete item;
+            }
+        });
+
+        connect(searchBar, &QLineEdit::textChanged, this, [this](const QString& text)
+        {
+            auto l = NSpaceManager::getInstance()->getSpace()->searchNotes(text, NoteColumn::id | NoteColumn::title);
+            listWidget->clear();
+            while (l.executeStep())
+            {
+                QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(l.getColumn("title").getString()),
+                                                            listWidget);
+                items[item] = l.getColumn("id").getInt64();
+                listWidget->addItem(item);
             }
         });
     }
