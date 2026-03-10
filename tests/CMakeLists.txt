@@ -45,6 +45,8 @@ add_executable(NTA_Test
         ../src/nspacemanager.h
         spacemanagertest.cpp
         spacemanagertest.h
+        ../src/nnoteexplorer.cpp
+        ../src/nnoteexplorer.h
 )
 target_link_libraries(NTA_Test
         Qt::Core

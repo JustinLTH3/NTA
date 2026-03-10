@@ -31,6 +31,11 @@ namespace NTA
         return false;
     }
 
+    QSharedPointer<Space> NSpaceManager::getSpace() const
+    {
+        return space;
+    }
+
     NSpaceManager::NSpaceManager(const QSharedPointer<Space>& in_space) : QObject(nullptr), space(in_space)
     {
     }

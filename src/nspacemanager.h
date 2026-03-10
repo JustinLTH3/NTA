@@ -15,6 +15,7 @@ namespace NTA
         static QPointer<NSpaceManager> getInstance();
         static void destroyInstance();
         static bool createInstance(const QSharedPointer<Space>& in_space);
+        QSharedPointer<Space> getSpace() const;
 
     protected:
         explicit NSpaceManager(const QSharedPointer<Space>& in_space);
