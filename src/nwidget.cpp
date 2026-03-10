@@ -16,6 +16,7 @@
 #include "DockManager.h"
 #include "ElidingLabel.h"
 #include "FloatingDockContainer.h"
+#include "nwidgetmanager.h"
 #include "ui_NWidget.h"
 #include "QAction"
 
@@ -29,11 +30,13 @@ namespace NTA
         auto a = new QAction(tr("pin"), this);
         setTitleBarActions({a});
         connect(a, &QAction::triggered, this, &NWidget::togglePin);
+        setFeature(DockWidgetDeleteOnClose, true);
     }
 
     NWidget::~NWidget()
     {
         delete ui;
+        if (NWidgetManager::instance)NWidgetManager::instance->removeWidget(this);
     }
 
     QSharedPointer<Note> NWidget::getNote() const

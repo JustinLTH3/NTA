@@ -9,6 +9,7 @@
 #include "DockManager.h"
 #include "nnoteexplorer.h"
 #include "nwidget.h"
+#include "nwidgetmanager.h"
 
 namespace NTA
 {
@@ -32,10 +33,12 @@ namespace NTA
                                    "NTA is a open source note taking app with Markdown support. Placeholder..................."));
         });
 
+        NWidgetManager::createInstance(dockManager);
+
         getWindowMenu()->addAction("Note Explorer", this, [this]()
         {
             spdlog::info("show note explorer");
-            NNoteExplorer* note_explorer = new NNoteExplorer(dockManager, "Note Explorer", this);
+            auto note_explorer = NWidgetManager::getInstance()->createWidget<NNoteExplorer>("Note Explorer", this);
             dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, note_explorer,
                                          dockContainer->dockArea(0));
         });

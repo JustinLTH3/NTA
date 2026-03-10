@@ -18,6 +18,7 @@ namespace NTA
     class NWidget : public ads::CDockWidget
     {
         Q_OBJECT
+        friend class NWidgetManager;
 
     public:
         explicit NWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);
@@ -30,6 +31,7 @@ namespace NTA
     protected:
         QSharedPointer<Note> note;
         bool isLinked = false;
+        QString typeName;
 
     protected slots:
         void onFloat(bool isFloating);
