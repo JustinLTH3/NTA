@@ -7,6 +7,7 @@
 #include "DockAreaWidget.h"
 #include "ui_NMainWindow.h"
 #include "DockManager.h"
+#include "neditorwidget.h"
 #include "nnoteexplorer.h"
 #include "nwidget.h"
 #include "nwidgetmanager.h"
@@ -19,6 +20,7 @@ namespace NTA
         ads::CDockManager::setConfigFlag(ads::CDockManager::FocusHighlighting, true);
         dockManager = new ads::CDockManager();
         ads::CDockManager::setConfigFlag(ads::CDockManager::AlwaysShowTabs, true);
+        ads::CDockManager::setConfigFlag(ads::CDockManager::FloatingContainerHasWidgetTitle, true);
         dockContainer = new ads::CDockContainerWidget(dockManager);
         setCentralWidget(dockContainer);
         auto aboutQt = new QAction(tr("About Qt"), this);
@@ -42,6 +44,19 @@ namespace NTA
             dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, note_explorer,
                                          dockContainer->dockArea(0));
         });
+        getWindowMenu()->addAction("Note Editor", this, [this]()
+        {
+            spdlog::info("show note editor");
+            auto noteEditor = NWidgetManager::getInstance()->createWidget<NEditorWidget>("Note Editor");
+            dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, noteEditor,
+                                         dockContainer->dockArea(0));
+        });
+        connect(dockManager, &ads::CDockManager::floatingWidgetCreated, this,
+                [](ads::CFloatingDockContainer* floatingWidget)
+                {
+                    spdlog::info("floating widget created");
+                    floatingWidget->setParent(nullptr);
+                });
     }
 
     NMainWindow::~NMainWindow()

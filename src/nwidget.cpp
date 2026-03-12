@@ -81,6 +81,7 @@ namespace NTA
 
     void NWidget::onFloat(bool isFloating)
     {
+        spdlog::info("on float");
         if (isFloating && floatingDockContainer())
         {
             //Remove parent for not bringing up other floating widgets.
