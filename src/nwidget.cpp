@@ -46,11 +46,18 @@ namespace NTA
         return isLinked;
     }
 
-    void NWidget::linkNote(const QSharedPointer<Note>& inNote)
+    void NWidget::linkNote(const QSharedPointer<Note>& inNote, bool linked)
     {
-        note = inNote;
-        isLinked = true;
+        setNote(inNote);
+        isLinked = linked && inNote;
     }
+
+    void NWidget::setNote(const QSharedPointer<Note>& inNote)
+    {
+        if (inNote && inNote == note)return;
+        note = inNote;
+    }
+
 
     void NWidget::togglePin()
     {

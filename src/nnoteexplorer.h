@@ -20,8 +20,11 @@ namespace NTA
         explicit NNoteExplorer(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);
         ~NNoteExplorer() override;
 
+        void linkNote(const QSharedPointer<Note>& inNote, bool linked) override;
+        void setNote(const QSharedPointer<Note>& inNote) override;
+
     protected slots:
-        void onFocusNoteChanged(const QSharedPointer<Note>& newNote) override;
+        void onFocusNoteChanged(int64_t old, int64_t now) override;
 
     protected:
         QListWidget* listWidget = nullptr;
