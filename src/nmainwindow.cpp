@@ -47,6 +47,8 @@ namespace NTA
     NMainWindow::~NMainWindow()
     {
         delete ui;
+        NWidgetManager::destroyInstance();
+        NNoteManager::destroyInstance();
     }
 
     QMenu* NMainWindow::getFileMenu() const

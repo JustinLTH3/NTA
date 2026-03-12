@@ -5,6 +5,8 @@
 #include "nwidgetmanager.h"
 
 #include <QPointer>
+#include <QXmlStreamReader>
+
 #include "note.h"
 #include "DockManager.h"
 
@@ -40,6 +42,7 @@ namespace NTA
                     auto n = qobject_cast<NWidget*>(now);
                     if (!n)
                         return;
+                    if (!n->note && currentNoteId == -1)return;
                     if (currentNoteId == n->note->id) return;
                     emit currentFocusedNoteChanged(currentNoteId, n->note->id);
                     currentNoteId = n->note->id;

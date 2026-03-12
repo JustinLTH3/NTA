@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
                                  if (NTA::NNoteManager::createInstance(space))
                                  {
                                      const auto mainWindow = new NTA::NMainWindow();
+                                     mainWindow->setAttribute(Qt::WA_DeleteOnClose);
                                      mainWindow->show();
                                      startWindow->deleteLater();
                                  }
