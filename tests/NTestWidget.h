@@ -15,6 +15,7 @@ namespace ads
 class NTestWidget : public NTA::NWidget
 {
     Q_OBJECT
+    friend class NWidgetManagerTest;
 
 public:
     explicit NTestWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);

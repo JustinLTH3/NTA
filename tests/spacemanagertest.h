@@ -7,7 +7,7 @@ namespace NTA
     class Space;
 }
 
-class SpaceManagerTest : public QObject
+class NoteManagerTest : public QObject
 {
     Q_OBJECT
 

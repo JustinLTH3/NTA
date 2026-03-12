@@ -17,6 +17,7 @@ namespace NTA
     {
         Q_OBJECT
         friend class NWidget;
+        friend class NWidgetManagerTest;
 
     public:
         static QPointer<NWidgetManager> getInstance();
