@@ -25,7 +25,7 @@ namespace NTA
         if (columns & title && note->title != updateData.title)
         {
             note->title = updateData.title;
-            query.append(R"(title = :TIT,')");
+            query.append(R"(title = :TIT, )");
             doUpdate = true;
         } else if (columns & title && note->title == updateData.title)columns ^= title;
         if (columns & body && note->body != updateData.body)
