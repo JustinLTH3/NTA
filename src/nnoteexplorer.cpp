@@ -85,8 +85,9 @@ namespace NTA
             if (!note || note->typeId != 1)return;
             auto e = NWidgetManager::getInstance()->createWidget<NEditorWidget>("Editor");
             e->linkNote(note, true);
-            auto f = this->dockManager()->addDockWidgetFloating(e);
-            f->show();
+            if (dockContainer()->dockArea(1))
+                this->dockContainer()->addDockWidget(ads::CenterDockWidgetArea, e, dockContainer()->dockArea(1));
+            else this->dockContainer()->addDockWidget(ads::RightDockWidgetArea, e);
         });
     }
 
