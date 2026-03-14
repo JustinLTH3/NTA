@@ -25,26 +25,24 @@ namespace NTA
         if (columns & title && note->title != updateData.title)
         {
             note->title = updateData.title;
-            query.append(R"(title = ')");
-            query.append(note->title);
-            query.append(R"(', )");
+            query.append(R"(title = :TIT,')");
             doUpdate = true;
-        }
+        } else if (columns & title && note->title == updateData.title)columns ^= title;
         if (columns & body && note->body != updateData.body)
         {
             note->body = updateData.body;
-            query.append(R"(body = ')");
-            query.append(note->body);
-            query.append(R"(', )");
+            query.append(R"(body = :BOD, )");
             doUpdate = true;
-        }
+        } else if (columns & body && note->body == updateData.body)columns ^= body;
         if (!doUpdate)return false;
 
-        query.append("updated_at = '");
-        query.append(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
-        query.append("' WHERE id = ?;");
+        query.append("updated_at = :UPD");
+        query.append(" WHERE id = :ID;");
         SQLite::Statement statement(*space->getFile(), query.toStdString());
-        statement.bind(1, id);
+        statement.bind(":ID", id);
+        statement.bind(":UPD", QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toStdString());
+        if (columns & title)statement.bind(":TIT", updateData.title.toStdString());
+        if (columns & body)statement.bind(":BOD", updateData.body.toStdString());
         auto r = statement.exec();
         if (r)Q_EMIT noteUpdated(id, from, columns);
         return r;
