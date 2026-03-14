@@ -44,13 +44,6 @@ namespace NTA
             dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, note_explorer,
                                          dockContainer->dockArea(0));
         });
-        getWindowMenu()->addAction("Note Editor", this, [this]()
-        {
-            spdlog::info("show note editor");
-            auto noteEditor = NWidgetManager::getInstance()->createWidget<NEditorWidget>("Note Editor");
-            dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, noteEditor,
-                                         dockContainer->dockArea(0));
-        });
         connect(dockManager, &ads::CDockManager::floatingWidgetCreated, this,
                 [](ads::CFloatingDockContainer* floatingWidget)
                 {
