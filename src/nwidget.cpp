@@ -7,6 +7,7 @@
 #include "nwidget.h"
 
 #include <QLayout>
+#include <QPointer>
 #include <QTimer>
 #include <spdlog/spdlog.h>
 
@@ -16,6 +17,7 @@
 #include "DockManager.h"
 #include "ElidingLabel.h"
 #include "FloatingDockContainer.h"
+#include "nspacemanager.h"
 #include "ui_NWidget.h"
 #include "QAction"
 
@@ -29,6 +31,7 @@ namespace NTA
         auto a = new QAction(tr("pin"), this);
         setTitleBarActions({a});
         connect(a, &QAction::triggered, this, &NWidget::togglePin);
+        connect(NNoteManager::getInstance(), &NNoteManager::noteUpdated, this, &NWidget::onNoteUpdated);
     }
 
     NWidget::~NWidget()

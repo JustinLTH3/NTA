@@ -1,7 +1,13 @@
 ﻿#ifndef NTA_NEDITORWIDGET_H
 #define NTA_NEDITORWIDGET_H
 
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QTimer>
+
 #include "nwidget.h"
+
+class QPlainTextEdit;
 
 namespace NTA
 {
@@ -15,8 +21,15 @@ namespace NTA
 
         void linkNote(const QSharedPointer<Note>& inNote, bool linked) override;
         void setNote(const QSharedPointer<Note>& inNote) override;
+
     protected slots:
         void onFocusNoteChanged(int64_t old, int64_t now) override;
+        void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns) override;
+
+    protected:
+        QPlainTextEdit* content = nullptr;
+        QLineEdit* titleBar = nullptr;
+        QTimer saveTimer;
     };
 } // NTA
 

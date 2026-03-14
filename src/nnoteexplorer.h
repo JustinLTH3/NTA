@@ -25,6 +25,7 @@ namespace NTA
 
     protected slots:
         void onFocusNoteChanged(int64_t old, int64_t now) override;
+        void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns) override;
 
     protected:
         QListWidget* listWidget = nullptr;

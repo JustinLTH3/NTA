@@ -13,6 +13,43 @@ namespace NTA
 {
     QPointer<NNoteManager> NNoteManager::instance = nullptr;
 
+    bool NNoteManager::updateNote(int64_t id, Note updateData, NWidget* from, unsigned int columns)
+    {
+        Q_ASSERT(columns != 0);
+        auto note = getNoteWithId(id);
+        if (!note)return false;
+
+        if ((columns & (title | body)) == 0)return false;
+        bool doUpdate = false;
+        QString query = R"(UPDATE notes SET )";
+        if (columns & title && note->title != updateData.title)
+        {
+            note->title = updateData.title;
+            query.append(R"(title = ')");
+            query.append(note->title);
+            query.append(R"(', )");
+            doUpdate = true;
+        }
+        if (columns & body && note->body != updateData.body)
+        {
+            note->body = updateData.body;
+            query.append(R"(body = ')");
+            query.append(note->body);
+            query.append(R"(', )");
+            doUpdate = true;
+        }
+        if (!doUpdate)return false;
+
+        query.append("updated_at = '");
+        query.append(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+        query.append("' WHERE id = ?;");
+        SQLite::Statement statement(*space->getFile(), query.toStdString());
+        statement.bind(1, id);
+        auto r = statement.exec();
+        if (r)Q_EMIT noteUpdated(id, from, columns);
+        return r;
+    }
+
     QPointer<NNoteManager> NNoteManager::getInstance()
     {
         return instance;
