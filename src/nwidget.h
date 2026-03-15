@@ -38,6 +38,9 @@ namespace NTA
         void onFloat(bool isFloating);
         void togglePin();
         virtual void onFocusNoteChanged(int64_t old, int64_t now) = 0;
+        virtual void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns)
+        {
+        }
 
     private:
         Ui::NWidget* ui;

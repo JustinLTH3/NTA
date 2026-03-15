@@ -42,7 +42,7 @@ namespace NTA
                     auto n = qobject_cast<NWidget*>(now);
                     if (!n)
                         return;
-                    if (!n->note && currentNoteId == -1)return;
+                    if (!n->note)return;
                     if (currentNoteId == n->note->id) return;
                     emit currentFocusedNoteChanged(currentNoteId, n->note->id);
                     currentNoteId = n->note->id;

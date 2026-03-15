@@ -9,6 +9,7 @@
 
 namespace NTA
 {
+    class NWidget;
     struct Note;
     class Space;
 
@@ -45,5 +46,10 @@ namespace NTA
         static QPointer<NNoteManager> instance;
 
         QMap<int64_t, QWeakPointer<Note>> cachedNotes;
+
+    public:
+        bool updateNote(int64_t id, Note updateData, NWidget* from, unsigned int columns = NoteColumn::body);
+    signals:
+        void noteUpdated(int64_t id, NWidget* from, unsigned int columns);
     };
 }

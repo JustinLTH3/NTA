@@ -8,10 +8,13 @@
 #include <spdlog/spdlog.h>
 
 #include "ElidingLabel.h"
+#include "neditorwidget.h"
 #include "note.h"
 #include "nspacemanager.h"
+#include "nwidgetmanager.h"
 #include "PushButton.h"
 #include "space.h"
+#include "DockManager.h"
 
 namespace NTA
 {
@@ -31,6 +34,7 @@ namespace NTA
             auto note = NNoteManager::getInstance()->createNote();
             QListWidgetItem* item = new QListWidgetItem(note->title, listWidget);
             items[item] = note->id;
+            ids[note->id] = item;
             listWidget->addItem(item);
         });
         listWidget = new QListWidget(central);
@@ -41,6 +45,7 @@ namespace NTA
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(l.getColumn("title").getString()),
                                                         listWidget);
             items[item] = l.getColumn("id").getInt64();
+            ids[l.getColumn("id").getInt64()] = item;
             listWidget->addItem(item);
         }
         listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -55,6 +60,7 @@ namespace NTA
                 auto row = listWidget->indexAt(pos).row();
                 auto item = listWidget->item(row);
                 NNoteManager::getInstance()->getSpace()->deleteNote(items[item]);
+                ids.remove(items[item]);
                 items.remove(item);
                 delete item;
             }
@@ -69,8 +75,19 @@ namespace NTA
                 QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(l.getColumn("title").getString()),
                                                             listWidget);
                 items[item] = l.getColumn("id").getInt64();
+                ids[l.getColumn("id").getInt64()] = item;
                 listWidget->addItem(item);
             }
+        });
+        connect(listWidget, &QListWidget::itemDoubleClicked, this, [this](QListWidgetItem* item)
+        {
+            auto note = NNoteManager::getInstance()->getNoteWithId(items[item]);
+            if (!note || note->typeId != 1)return;
+            auto e = NWidgetManager::getInstance()->createWidget<NEditorWidget>("Editor");
+            e->linkNote(note, true);
+            if (dockContainer()->dockArea(1))
+                this->dockContainer()->addDockWidget(ads::CenterDockWidgetArea, e, dockContainer()->dockArea(1));
+            else this->dockContainer()->addDockWidget(ads::RightDockWidgetArea, e);
         });
     }
 
@@ -89,5 +106,15 @@ namespace NTA
 
     void NNoteExplorer::onFocusNoteChanged(int64_t old, int64_t now)
     {
+    }
+
+    void NNoteExplorer::onNoteUpdated(int64_t id, NWidget* from, unsigned int columns)
+    {
+        if (from == this)return;
+        if (columns & NoteColumn::title)
+        {
+            auto item = ids[id];
+            if (item)item->setText(NNoteManager::getInstance()->getNoteWithId(id)->title);
+        }
     }
 } // NTA
