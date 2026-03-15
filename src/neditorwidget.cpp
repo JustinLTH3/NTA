@@ -44,6 +44,14 @@ namespace NTA
             if (saveTimer.isActive())return;
             saveTimer.start(1000);
         });
+        connect(this, &CDockWidget::closed, this, [this]()
+        {
+            if (saveTimer.isActive())saveTimer.stop();
+            if (NNoteManager::getInstance() && note)
+                NNoteManager::getInstance()->updateNote(
+                    note->id, Note{.title = titleBar->text(), .body = content->toPlainText()}, this,
+                    NoteColumn::title | NoteColumn::body);
+        });
     }
 
     NEditorWidget::~NEditorWidget()
@@ -52,6 +60,11 @@ namespace NTA
 
     void NEditorWidget::linkNote(const QSharedPointer<Note>& inNote, bool linked)
     {
+        if (saveTimer.isActive())saveTimer.stop();
+        if (NNoteManager::getInstance() && note)
+            NNoteManager::getInstance()->updateNote(
+                note->id, Note{.title = titleBar->text(), .body = content->toPlainText()}, this,
+                NoteColumn::title | NoteColumn::body);
         NWidget::linkNote(inNote, linked);
         if (note)
         {
@@ -62,7 +75,17 @@ namespace NTA
 
     void NEditorWidget::setNote(const QSharedPointer<Note>& inNote)
     {
+        if (saveTimer.isActive())saveTimer.stop();
+        if (NNoteManager::getInstance() && note)
+            NNoteManager::getInstance()->updateNote(
+                note->id, Note{.title = titleBar->text(), .body = content->toPlainText()}, this,
+                NoteColumn::title | NoteColumn::body);
         NWidget::setNote(inNote);
+        if (note)
+        {
+            titleBar->setText(note->title);
+            content->setPlainText(note->body);
+        }
     }
 
     void NEditorWidget::onFocusNoteChanged(int64_t old, int64_t now)
