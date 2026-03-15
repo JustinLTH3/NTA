@@ -48,6 +48,8 @@ add_executable(NTA src/main.cpp
         src/nwidgetmanager.h
         src/neditorwidget.cpp
         src/neditorwidget.h
+        src/nlinkwidget.cpp
+        src/nlinkwidget.h
 )
 target_link_libraries(NTA
         Qt::Core

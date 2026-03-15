@@ -53,6 +53,8 @@ add_executable(NTA_Test
         nwidgetmanagertest.h
         ../src/neditorwidget.cpp
         ../src/neditorwidget.h
+        ../src/nlinkwidget.cpp
+        ../src/nlinkwidget.h
 )
 target_link_libraries(NTA_Test
         Qt::Core
