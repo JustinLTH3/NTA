@@ -6,6 +6,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include "../src/nlinkmanager.h"
 #include "../src/nspacemanager.h"
 #include "../src/space.h"
 
@@ -15,7 +16,10 @@ void TestAddLink::init()
     QDir::current().remove("test.db");
     space.reset(NTA::Space::createSpace(QDir::current(), "test.db"));
     NTA::NNoteManager::createInstance(space);
+    NTA::NLinkManager::createInstance(space);
     QVERIFY(space != nullptr);
+    QVERIFY(NTA::NLinkManager::getInstance() != nullptr);
+    QVERIFY(NTA::NNoteManager::getInstance() != nullptr);
     for (int i = 1; i <= 10; ++i)
     {
         NTA::NNoteManager::getInstance()->createNote(1, QString::number(i));
@@ -24,8 +28,10 @@ void TestAddLink::init()
 
 void TestAddLink::cleanup()
 {
+    //
     {
         NTA::NNoteManager::destroyInstance();
+        NTA::NLinkManager::destroyInstance();
         space.reset();
     }
     QDir::current().remove("test.db");
@@ -33,7 +39,7 @@ void TestAddLink::cleanup()
 
 void TestAddLink::addLinkTest()
 {
-    QVERIFY(space->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
     SQLite::Statement query(*space->getFile(), "SELECT * FROM note_links");
     QVERIFY(query.executeStep());
     QVERIFY(query.getColumn("source_id").getInt64() == 1);
@@ -43,38 +49,38 @@ void TestAddLink::addLinkTest()
 
 void TestAddLink::addAlreadyExistingLinkTest()
 {
-    QVERIFY(space->addLink(1, 2));
-    QVERIFY(!space->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(!NTA::NLinkManager::getInstance()->addLink(1, 2));
 }
 
 void TestAddLink::addLinkToNonExistingNoteTest()
 {
-    QVERIFY(!space->addLink(100, 2));
-    QVERIFY(!space->addLink(1, 100));
-    QVERIFY(!space->addLink(100, 100));
+    QVERIFY(!NTA::NLinkManager::getInstance()->addLink(100, 2));
+    QVERIFY(!NTA::NLinkManager::getInstance()->addLink(1, 100));
+    QVERIFY(!NTA::NLinkManager::getInstance()->addLink(100, 100));
 }
 
 void TestAddLink::addReverseLinkTest()
 {
-    QVERIFY(space->addLink(1, 2));
-    QVERIFY(space->addLink(2, 1));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
 }
 
 void TestAddLink::addLinkToSelfTest()
 {
-    QVERIFY(!space->addLink(1, 1));
+    QVERIFY(!NTA::NLinkManager::getInstance()->addLink(1, 1));
 }
 
 void TestAddLink::addMultipleLinksFromSameSourceTest()
 {
-    QVERIFY(space->addLink(1, 2));
-    QVERIFY(space->addLink(1, 3));
-    QVERIFY(space->addLink(1, 4));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 3));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 4));
 }
 
 void TestAddLink::addMultipleLinksToSameTargetTest()
 {
-    QVERIFY(space->addLink(1, 2));
-    QVERIFY(space->addLink(3, 2));
-    QVERIFY(space->addLink(4, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(3, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(4, 2));
 }

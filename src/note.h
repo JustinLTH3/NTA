@@ -24,6 +24,14 @@ namespace NTA
         createdAt = 1 << 4,
         updatedAt = 1 << 5
     };
+
+    struct NoteLink
+    {
+        int64_t source_id;
+        int64_t target_id;
+        QString description;
+        QString alias;
+    };
 }
 
 #endif //NTA_NOTE_H

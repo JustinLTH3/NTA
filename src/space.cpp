@@ -76,6 +76,7 @@ namespace NTA
                 "     source_id INTEGER NOT NULL,"
                 "     target_id INTEGER NOT NULL,"
                 "     description TEXT,"
+                "     alias TEXT, "
                 "     FOREIGN KEY (source_id) REFERENCES notes (id)"
                 "         ON DELETE CASCADE"
                 "         ON UPDATE CASCADE,"
@@ -214,20 +215,6 @@ namespace NTA
     {
     }
 
-
-    bool Space::addLink(int64_t from, int64_t to)
-    {
-        if (from == to)return false;
-        SQLite::Statement check(*file, "SELECT id FROM notes WHERE id = ? OR id = ?");
-        check.bind(1, from);
-        check.bind(2, to);
-        if (!check.executeStep())return false;
-        if (!check.executeStep())return false;
-        SQLite::Statement statement(*file, "INSERT OR IGNORE INTO note_links (source_id, target_id) VALUES (?, ?)");
-        statement.bind(1, from);
-        statement.bind(2, to);
-        return statement.exec();
-    }
 
     bool Space::deleteNote(int64_t id)
     {
