@@ -24,6 +24,8 @@ private slots:
     void removeLinkTest();
     void removeNonExistingLinkTest();
     void searchLinkTest();
+    void searchLinkFromSourceTest();
+    void searchLinkWithEmptyParamsTest();
     void cleanup();
 
 private:

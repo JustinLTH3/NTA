@@ -102,4 +102,17 @@ namespace NTA
         statement.bind(2, param.toStdString());
         return statement;
     }
+
+    SQLite::Statement NLinkManager::searchLinksOfSource(QString param, int64_t sourceId)
+    {
+        param.replace(QRegularExpression("([%_])"), "\\\\1");
+        param.prepend("%");
+        param.append("%");
+        SQLite::Statement statement(*space->getFile(),
+                                    "SELECT * FROM note_links WHERE source_id = ? AND rowid IN (SELECT rowid FROM note_links_fts WHERE description LIKE ? ESCAPE '\\' OR alias LIKE ? ESCAPE '\\');");
+        statement.bind(1, sourceId);
+        statement.bind(2, param.toStdString());
+        statement.bind(3, param.toStdString());
+        return statement;
+    }
 } // NTA

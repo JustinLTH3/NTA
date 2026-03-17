@@ -130,3 +130,34 @@ void LinkManagerTest::searchLinkTest()
     QVERIFY(links.getColumn("target_id").getInt64() == 1);
     QVERIFY(!links.executeStep());
 }
+
+void LinkManagerTest::searchLinkFromSourceTest()
+{
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
+    QVERIFY(NTA::NLinkManager::getInstance()->editLink(1, 2, "Test description", "Test alias"));
+    QVERIFY(NTA::NLinkManager::getInstance()->editLink(2, 1, "Test description", "Test alias"));
+
+    auto links = NTA::NLinkManager::getInstance()->searchLinksOfSource("Test", 1);
+    QVERIFY(links.executeStep());
+    QVERIFY(links.getColumn("source_id").getInt64() == 1);
+    QVERIFY(links.getColumn("target_id").getInt64() == 2);
+    QVERIFY(!links.executeStep());
+    links = NTA::NLinkManager::getInstance()->searchLinksOfSource("Test", 2);
+    QVERIFY(links.executeStep());
+    QVERIFY(links.getColumn("source_id").getInt64() == 2);
+    QVERIFY(links.getColumn("target_id").getInt64() == 1);
+    QVERIFY(!links.executeStep());
+}
+
+void LinkManagerTest::searchLinkWithEmptyParamsTest()
+{
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
+    QVERIFY(NTA::NLinkManager::getInstance()->editLink(1, 2, "Test description", "Test alias"));
+    QVERIFY(NTA::NLinkManager::getInstance()->editLink(2, 1, "Test description", "Test alias"));
+    auto links = NTA::NLinkManager::getInstance()->searchLinks("");
+    QVERIFY(links.executeStep());
+    QVERIFY(links.executeStep());
+    QVERIFY(!links.executeStep());
+}

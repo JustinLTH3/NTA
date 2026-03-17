@@ -31,6 +31,7 @@ namespace NTA
         SQLite::Statement getLinks(int64_t from);
         SQLite::Statement getBackLinks(int64_t to);
         SQLite::Statement searchLinks(QString param);
+        SQLite::Statement searchLinksOfSource(QString param, int64_t sourceId);
 
     protected:
         explicit NLinkManager(const QSharedPointer<Space>& in_space);
