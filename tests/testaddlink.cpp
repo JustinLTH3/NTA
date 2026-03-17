@@ -10,7 +10,7 @@
 #include "../src/nspacemanager.h"
 #include "../src/space.h"
 
-void TestAddLink::init()
+void LinkManagerTest::init()
 {
     space.reset();
     QDir::current().remove("test.db");
@@ -26,7 +26,7 @@ void TestAddLink::init()
     }
 }
 
-void TestAddLink::cleanup()
+void LinkManagerTest::cleanup()
 {
     //
     {
@@ -37,7 +37,7 @@ void TestAddLink::cleanup()
     QDir::current().remove("test.db");
 }
 
-void TestAddLink::addLinkTest()
+void LinkManagerTest::addLinkTest()
 {
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
     SQLite::Statement query(*space->getFile(), "SELECT * FROM note_links");
@@ -47,40 +47,86 @@ void TestAddLink::addLinkTest()
     QVERIFY(!query.executeStep());
 }
 
-void TestAddLink::addAlreadyExistingLinkTest()
+void LinkManagerTest::addAlreadyExistingLinkTest()
 {
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
     QVERIFY(!NTA::NLinkManager::getInstance()->addLink(1, 2));
 }
 
-void TestAddLink::addLinkToNonExistingNoteTest()
+void LinkManagerTest::addLinkToNonExistingNoteTest()
 {
     QVERIFY(!NTA::NLinkManager::getInstance()->addLink(100, 2));
     QVERIFY(!NTA::NLinkManager::getInstance()->addLink(1, 100));
     QVERIFY(!NTA::NLinkManager::getInstance()->addLink(100, 100));
 }
 
-void TestAddLink::addReverseLinkTest()
+void LinkManagerTest::addReverseLinkTest()
 {
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
 }
 
-void TestAddLink::addLinkToSelfTest()
+void LinkManagerTest::addLinkToSelfTest()
 {
     QVERIFY(!NTA::NLinkManager::getInstance()->addLink(1, 1));
 }
 
-void TestAddLink::addMultipleLinksFromSameSourceTest()
+void LinkManagerTest::addMultipleLinksFromSameSourceTest()
 {
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 3));
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 4));
 }
 
-void TestAddLink::addMultipleLinksToSameTargetTest()
+void LinkManagerTest::addMultipleLinksToSameTargetTest()
 {
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(3, 2));
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(4, 2));
+}
+
+void LinkManagerTest::getLinksTest()
+{
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
+    auto links = NTA::NLinkManager::getInstance()->getLinks(1);
+    QVERIFY(links.executeStep());
+    QVERIFY(links.getColumn("source_id").getInt64() == 1);
+    QVERIFY(links.getColumn("target_id").getInt64() == 2);
+    QVERIFY(!links.executeStep());
+}
+
+void LinkManagerTest::removeLinkTest()
+{
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->removeLink(1, 2));
+    auto links = NTA::NLinkManager::getInstance()->getLinks(1);
+    QVERIFY(!links.executeStep());
+}
+
+void LinkManagerTest::removeNonExistingLinkTest()
+{
+}
+
+void LinkManagerTest::searchLinkTest()
+{
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->editLink(1, 2, "Test description", "Test alias"));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
+    QVERIFY(NTA::NLinkManager::getInstance()->editLink(2, 1, "Test description%", "Test alias_"));
+
+    auto links = NTA::NLinkManager::getInstance()->searchLinks("Test");
+    QVERIFY(links.executeStep());
+    QVERIFY(links.executeStep());
+    QVERIFY(!links.executeStep());
+    links = NTA::NLinkManager::getInstance()->searchLinks("description%");
+    QVERIFY(links.executeStep());
+    QVERIFY(links.getColumn("source_id").getInt64() == 2);
+    QVERIFY(links.getColumn("target_id").getInt64() == 1);
+    QVERIFY(!links.executeStep());
+    links = NTA::NLinkManager::getInstance()->searchLinks("alias_");
+    QVERIFY(links.executeStep());
+    QVERIFY(links.getColumn("source_id").getInt64() == 2);
+    QVERIFY(links.getColumn("target_id").getInt64() == 1);
+    QVERIFY(!links.executeStep());
 }

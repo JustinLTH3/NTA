@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     QTest::qExec(&test3, argc, argv);
     TestGetNotes test4;
     QTest::qExec(&test4, argc, argv);
-    TestAddLink test5;
+    LinkManagerTest test5;
     QTest::qExec(&test5, argc, argv);
     CreateSpaceDialogTest test6;
     QTest::qExec(&test6, argc, argv);

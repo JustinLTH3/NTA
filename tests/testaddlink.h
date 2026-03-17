@@ -7,7 +7,7 @@ namespace NTA
     class Space;
 }
 
-class TestAddLink : public QObject
+class LinkManagerTest : public QObject
 {
     Q_OBJECT
 
@@ -20,6 +20,10 @@ private slots:
     void addLinkToSelfTest();
     void addMultipleLinksFromSameSourceTest();
     void addMultipleLinksToSameTargetTest();
+    void getLinksTest();
+    void removeLinkTest();
+    void removeNonExistingLinkTest();
+    void searchLinkTest();
     void cleanup();
 
 private:

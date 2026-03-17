@@ -5,6 +5,7 @@
 #pragma once
 #include <QObject>
 #include <QSharedPointer>
+#include <SQLiteCpp/Statement.h>
 
 namespace NTA
 {
@@ -25,6 +26,11 @@ namespace NTA
          * @return Success or not.
          */
         bool addLink(int64_t from, int64_t to);
+        bool removeLink(int64_t from, int64_t to);
+        bool editLink(int64_t from, int64_t to, QString description, QString alias);
+        SQLite::Statement getLinks(int64_t from);
+        SQLite::Statement getBackLinks(int64_t to);
+        SQLite::Statement searchLinks(QString param);
 
     protected:
         explicit NLinkManager(const QSharedPointer<Space>& in_space);
