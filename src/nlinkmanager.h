@@ -7,6 +7,8 @@
 #include <QSharedPointer>
 #include <SQLiteCpp/Statement.h>
 
+#include "note.h"
+
 namespace NTA
 {
     class Space;
@@ -32,6 +34,8 @@ namespace NTA
         SQLite::Statement getBackLinks(int64_t to);
         SQLite::Statement searchLinks(QString param);
         SQLite::Statement searchLinksOfSource(QString param, int64_t sourceId);
+        SQLite::Statement searchNotesExcludeLinked(QString param, int64_t sourceId,
+                                                   NoteColumn columns = NoteColumn::id);
 
     protected:
         explicit NLinkManager(const QSharedPointer<Space>& in_space);

@@ -25,6 +25,8 @@ namespace NTA
         updatedAt = 1 << 5
     };
 
+    Q_DECLARE_FLAGS(NoteColumns, NoteColumn)
+
     struct NoteLink
     {
         int64_t source_id;

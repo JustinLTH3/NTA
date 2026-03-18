@@ -68,7 +68,7 @@ namespace NTA
                 "     body,"
                 "     content = 'notes',"
                 "     content_rowid = id,"
-                "     tokenize = 'icu'"
+                "     tokenize = 'trigram'"
                 " );"
             );
             file->exec(" CREATE TABLE note_links"

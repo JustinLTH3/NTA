@@ -26,6 +26,7 @@ private slots:
     void searchLinkTest();
     void searchLinkFromSourceTest();
     void searchLinkWithEmptyParamsTest();
+    void searchNotesExcludeLinkTest();
     void cleanup();
 
 private:

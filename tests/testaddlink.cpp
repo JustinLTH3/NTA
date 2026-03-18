@@ -161,3 +161,23 @@ void LinkManagerTest::searchLinkWithEmptyParamsTest()
     QVERIFY(links.executeStep());
     QVERIFY(!links.executeStep());
 }
+
+void LinkManagerTest::searchNotesExcludeLinkTest()
+{
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(1, 2));
+    QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
+    auto links = NTA::NLinkManager::getInstance()->searchNotesExcludeLinked("", 1);
+    int count = 0;
+    while (links.executeStep())
+    {
+        auto id = links.getColumn("id").getInt64();
+        QVERIFY(id != 1);
+        QVERIFY(id != 2);
+        ++count;
+    }
+    QVERIFY(count == 8);
+    links = NTA::NLinkManager::getInstance()->searchNotesExcludeLinked("1", 1);
+    QVERIFY (links.executeStep());
+    QVERIFY(links.getColumn("id").getInt64() == 10);
+    QVERIFY(!links.executeStep());
+}

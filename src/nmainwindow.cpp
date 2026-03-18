@@ -8,6 +8,7 @@
 #include "ui_NMainWindow.h"
 #include "DockManager.h"
 #include "neditorwidget.h"
+#include "nlinkwidget.h"
 #include "nnoteexplorer.h"
 #include "nwidget.h"
 #include "nwidgetmanager.h"
@@ -42,6 +43,13 @@ namespace NTA
             spdlog::info("show note explorer");
             auto note_explorer = NWidgetManager::getInstance()->createWidget<NNoteExplorer>("Note Explorer", this);
             dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, note_explorer,
+                                         dockContainer->dockArea(0));
+        });
+        getWindowMenu()->addAction("Link", this, [this]()
+        {
+            spdlog::info("show link");
+            auto link = NWidgetManager::getInstance()->createWidget<NLinkWidget>("Link", this);
+            dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, link,
                                          dockContainer->dockArea(0));
         });
         connect(dockManager, &ads::CDockManager::floatingWidgetCreated, this,

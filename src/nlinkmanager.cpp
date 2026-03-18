@@ -115,4 +115,31 @@ namespace NTA
         statement.bind(3, param.toStdString());
         return statement;
     }
+
+    SQLite::Statement NLinkManager::searchNotesExcludeLinked(QString param, int64_t sourceId, NoteColumn columns)
+    {
+        Q_ASSERT(columns != 0);
+        QString query = R"(SELECT )";
+        if (columns & NoteColumn::id)query.append("id, ");
+        if (columns & NoteColumn::title)query.append("title, ");
+        if (columns & NoteColumn::body)query.append("body, ");
+        if (columns & NoteColumn::typeId)query.append("typeId, ");
+        if (columns & NoteColumn::createdAt)query.append("created_at, ");
+        if (columns & NoteColumn::updatedAt)query.append("updated_at, ");
+        query.removeAt(query.length() - 2);
+        query.append(
+                    "FROM notes WHERE NOT id = ? AND id NOT IN (SELECT target_id FROM note_links WHERE source_id = ?) AND id IN (SELECT rowid FROM notes_fts WHERE title LIKE ? ESCAPE '\\' OR body LIKE ? ESCAPE '\\');");
+
+
+
+        param.replace(QRegularExpression("([%_])"), "\\\\1");
+        param.prepend("%");
+        param.append("%");
+        SQLite::Statement statement(*space->getFile(), query.toStdString());
+        statement.bind(1, sourceId);
+        statement.bind(2, sourceId);
+        statement.bind(3, param.toStdString());
+        statement.bind(4, param.toStdString());
+        return statement;
+    }
 } // NTA
