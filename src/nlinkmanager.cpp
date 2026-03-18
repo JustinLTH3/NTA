@@ -84,6 +84,22 @@ namespace NTA
         return statement;
     }
 
+    SQLite::Statement NLinkManager::getLink(int64_t from, int64_t to, unsigned int columns)
+    {
+        Q_ASSERT(columns != 0);
+        QString query = R"(SELECT )";
+        if (columns & NoteLinkColumns::source_id)query.append("source_id_id, ");
+        if (columns & NoteLinkColumns::target_id)query.append("target_id_id, ");
+        if (columns & NoteLinkColumns::description)query.append("description, ");
+        if (columns & NoteLinkColumns::alias)query.append("alias, ");
+        query.removeAt(query.length() - 2);
+        query.append(" FROM note_links WHERE source_id = ? AND target_id = ?");
+        SQLite::Statement statement(*space->getFile(), query.toStdString());
+        statement.bind(1, from);
+        statement.bind(2, to);
+        return statement;
+    }
+
     SQLite::Statement NLinkManager::getBackLinks(int64_t to)
     {
         SQLite::Statement statement(*space->getFile(), "SELECT * FROM note_links WHERE target_id = ?");

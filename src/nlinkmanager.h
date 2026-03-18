@@ -31,6 +31,7 @@ namespace NTA
         bool removeLink(int64_t from, int64_t to);
         bool editLink(int64_t from, int64_t to, QString description, QString alias);
         SQLite::Statement getLinks(int64_t from);
+        SQLite::Statement getLink(int64_t from, int64_t to, unsigned int columns = NoteLinkColumns::alias);
         SQLite::Statement getBackLinks(int64_t to);
         SQLite::Statement searchLinks(QString param);
         SQLite::Statement searchLinksOfSource(QString param, int64_t sourceId);

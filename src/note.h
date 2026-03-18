@@ -34,6 +34,16 @@ namespace NTA
         QString description;
         QString alias;
     };
+
+    enum NoteLinkColumns
+    {
+        source_id = 1 << 0,
+        target_id = 1 << 1,
+        description = 1 << 2,
+        alias = 1 << 3
+    };
+
+    Q_DECLARE_FLAGS(NoteLinkColumn, NoteLinkColumns)
 }
 
 #endif //NTA_NOTE_H

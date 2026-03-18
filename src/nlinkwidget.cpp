@@ -38,6 +38,9 @@ namespace NTA
                 for (auto& i: s)
                 {
                     NLinkManager::getInstance()->addLink(note->id, i);
+                    auto l = NLinkManager::getInstance()->getLink(note->id, i);
+                    if (l.executeStep())
+                        listWidget->addItem(QString::fromStdString(l.getColumn("alias").getString()));
                 }
             }
         });
