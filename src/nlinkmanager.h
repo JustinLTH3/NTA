@@ -35,7 +35,7 @@ namespace NTA
         SQLite::Statement searchLinks(QString param);
         SQLite::Statement searchLinksOfSource(QString param, int64_t sourceId);
         SQLite::Statement searchNotesExcludeLinked(QString param, int64_t sourceId,
-                                                   NoteColumn columns = NoteColumn::id);
+                                                   unsigned int columns = NoteColumn::id);
 
     protected:
         explicit NLinkManager(const QSharedPointer<Space>& in_space);

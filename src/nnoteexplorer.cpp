@@ -88,6 +88,7 @@ namespace NTA
             if (dockContainer()->dockArea(1))
                 this->dockContainer()->addDockWidget(ads::CenterDockWidgetArea, e, dockContainer()->dockArea(1));
             else this->dockContainer()->addDockWidget(ads::RightDockWidgetArea, e);
+            e->setFocus();
         });
     }
 

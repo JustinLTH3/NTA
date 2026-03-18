@@ -3,6 +3,8 @@
 
 #include "nwidget.h"
 
+class QToolButton;
+
 namespace NTA
 {
     class NLinkWidget : public NWidget
@@ -21,5 +23,6 @@ namespace NTA
 
     protected:
         QListWidget* listWidget = nullptr;
+        QToolButton* addBtn = nullptr;
     };
 } // NTA

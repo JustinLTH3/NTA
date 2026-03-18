@@ -52,7 +52,7 @@ namespace NTA
         if (!check.executeStep())return false;
         if (!check.executeStep())return false;
         SQLite::Statement statement(*space->getFile(),
-                                    "INSERT OR IGNORE INTO note_links (source_id, target_id, alias, description) VALUES (?, ?, null, null)");
+                                    "INSERT OR IGNORE INTO note_links (source_id, target_id, alias, description) VALUES (?1, ?2, (SELECT title FROM notes WHERE id = ?2), null)");
         statement.bind(1, from);
         statement.bind(2, to);
         return statement.exec();
@@ -116,7 +116,7 @@ namespace NTA
         return statement;
     }
 
-    SQLite::Statement NLinkManager::searchNotesExcludeLinked(QString param, int64_t sourceId, NoteColumn columns)
+    SQLite::Statement NLinkManager::searchNotesExcludeLinked(QString param, int64_t sourceId, unsigned int columns)
     {
         Q_ASSERT(columns != 0);
         QString query = R"(SELECT )";
@@ -128,8 +128,7 @@ namespace NTA
         if (columns & NoteColumn::updatedAt)query.append("updated_at, ");
         query.removeAt(query.length() - 2);
         query.append(
-                    "FROM notes WHERE NOT id = ? AND id NOT IN (SELECT target_id FROM note_links WHERE source_id = ?) AND id IN (SELECT rowid FROM notes_fts WHERE title LIKE ? ESCAPE '\\' OR body LIKE ? ESCAPE '\\');");
-
+            "FROM notes WHERE NOT id = ? AND id NOT IN (SELECT target_id FROM note_links WHERE source_id = ?) AND id IN (SELECT rowid FROM notes_fts WHERE title LIKE ? ESCAPE '\\' OR body LIKE ? ESCAPE '\\');");
 
 
         param.replace(QRegularExpression("([%_])"), "\\\\1");

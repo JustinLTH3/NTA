@@ -4,9 +4,16 @@
 
 #include "nlinkwidget.h"
 
+#include <QPointer>
+#include <QToolButton>
 #include <QVBoxLayout>
+#include <SQLiteCpp/Column.h>
 
 #include "ElidingLabel.h"
+#include "nlinkmanager.h"
+#include "nselectnotedialog.h"
+#include "nspacemanager.h"
+#include "PushButton.h"
 
 namespace NTA
 {
@@ -18,6 +25,22 @@ namespace NTA
         central->setLayout(new QVBoxLayout(central));
         listWidget = new QListWidget(central);
         central->layout()->addWidget(listWidget);
+        addBtn = new QToolButton();
+        central->layout()->addWidget(addBtn);
+        addBtn->setText("Add");
+        connect(addBtn, &QToolButton::clicked, this, [this]()
+        {
+            if (!note)return;
+            NSelectNoteDialog selectNoteDialog(note->id);
+            if (selectNoteDialog.exec())
+            {
+                auto s = selectNoteDialog.getSelected();
+                for (auto& i: s)
+                {
+                    NLinkManager::getInstance()->addLink(note->id, i);
+                }
+            }
+        });
     }
 
     NLinkWidget::~NLinkWidget()
@@ -32,11 +55,21 @@ namespace NTA
     void NLinkWidget::setNote(const QSharedPointer<Note>& inNote)
     {
         NWidget::setNote(inNote);
+        listWidget->clear();
+        if (note)
+        {
+            auto links = NLinkManager::getInstance()->getLinks(note->id);
+            while (links.executeStep())
+            {
+                listWidget->addItem(QString::fromStdString(links.getColumn("alias").getString()));
+            }
+        }
     }
 
     void NLinkWidget::onFocusNoteChanged(int64_t old, int64_t now)
     {
-
+        if (isLinked || old == now)return;
+        setNote(NNoteManager::getInstance()->getNoteWithId(now));
     }
 
     void NLinkWidget::onNoteUpdated(int64_t id, NWidget* from, unsigned int columns)

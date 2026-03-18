@@ -1,5 +1,6 @@
 ﻿#include "nmainwindow.h"
 
+#include <filesystem>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <spdlog/spdlog.h>
@@ -8,6 +9,7 @@
 #include "ui_NMainWindow.h"
 #include "DockManager.h"
 #include "neditorwidget.h"
+#include "nlinkmanager.h"
 #include "nlinkwidget.h"
 #include "nnoteexplorer.h"
 #include "nwidget.h"
@@ -37,6 +39,7 @@ namespace NTA
         });
 
         NWidgetManager::createInstance(dockManager);
+        NLinkManager::createInstance(NNoteManager::getInstance()->getSpace());
 
         getWindowMenu()->addAction("Note Explorer", this, [this]()
         {

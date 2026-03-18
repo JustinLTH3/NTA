@@ -57,6 +57,9 @@ add_executable(NTA_Test
         ../src/nlinkwidget.h
         ../src/nlinkmanager.cpp
         ../src/nlinkmanager.h
+        ../src/nselectnotedialog.cpp
+        ../src/nselectnotedialog.h
+        ../src/nselectnotedialog.ui
 )
 target_link_libraries(NTA_Test
         Qt::Core
