@@ -8,6 +8,7 @@
 #include "DockAreaWidget.h"
 #include "ui_NMainWindow.h"
 #include "DockManager.h"
+#include "nbacklinkwidget.h"
 #include "neditorwidget.h"
 #include "nlinkmanager.h"
 #include "nlinkwidget.h"
@@ -53,6 +54,13 @@ namespace NTA
             spdlog::info("show link");
             auto link = NWidgetManager::getInstance()->createWidget<NLinkWidget>("Link", this);
             dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, link,
+                                         dockContainer->dockArea(0));
+        });
+        getWindowMenu()->addAction("Backlink", this, [this]()
+        {
+            spdlog::info("show backlink");
+            auto backlink = NWidgetManager::getInstance()->createWidget<NBacklinkWidget>("Backlink", this);
+            dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, backlink,
                                          dockContainer->dockArea(0));
         });
         connect(dockManager, &ads::CDockManager::floatingWidgetCreated, this,

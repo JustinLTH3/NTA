@@ -103,7 +103,8 @@ namespace NTA
 
     SQLite::Statement NLinkManager::getBackLinks(int64_t to)
     {
-        SQLite::Statement statement(*space->getFile(), "SELECT * FROM note_links WHERE target_id = ?");
+        SQLite::Statement statement(*space->getFile(),
+                                    "SELECT *, notes.title FROM note_links LEFT JOIN notes ON notes.id = source_id WHERE target_id = ?");
         statement.bind(1, to);
         return statement;
     }
