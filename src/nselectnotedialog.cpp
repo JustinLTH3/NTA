@@ -42,14 +42,15 @@ namespace NTA
         {
             auto text = ui->lineEdit->text();
             auto l = NLinkManager::getInstance()->
-                    searchNotesExcludeLinked(text, this->id, NoteColumn::id);
-            while (ui->listWidget->count())
-            {
-                ui->listWidget->takeItem(0);
-            }
+                    searchNotesExcludeLinked(text, this->id, NoteColumn::id, true);
+            QList<int64_t> hideItems;
             while (l.executeStep())
             {
-                ui->listWidget->addItem(ids[l.getColumn("id").getInt64()]);
+                hideItems.append(l.getColumn("id").getInt64());
+            }
+            for (auto item: ids)
+            {
+                item->setHidden(hideItems.contains(items[item]));
             }
         });
     }
