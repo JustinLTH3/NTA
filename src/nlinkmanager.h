@@ -34,7 +34,7 @@ namespace NTA
         SQLite::Statement getLink(int64_t from, int64_t to, unsigned int columns = NoteLinkColumns::alias);
         SQLite::Statement getBackLinks(int64_t to);
         SQLite::Statement searchLinks(QString param);
-        SQLite::Statement searchLinksOfSource(QString param, int64_t sourceId);
+        SQLite::Statement searchLinksOfSourceWithNoteTitle(QString param, int64_t sourceId);
         SQLite::Statement searchNotesExcludeLinked(QString param, int64_t sourceId,
                                                    unsigned int columns = NoteColumn::id);
 

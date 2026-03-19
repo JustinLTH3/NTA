@@ -18,6 +18,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item>
     <widget class="QListWidget" name="listWidget"/>
    </item>
    <item>

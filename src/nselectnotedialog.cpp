@@ -7,6 +7,7 @@
 #include "nselectnotedialog.h"
 
 #include <QPointer>
+#include <spdlog/spdlog.h>
 #include <SQLiteCpp/Column.h>
 
 #include "nlinkmanager.h"
@@ -21,7 +22,7 @@ namespace NTA
 
         connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
         connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
+        ui->listWidget->setSelectionMode(QAbstractItemView::MultiSelection);
         auto n = NLinkManager::getInstance()->searchNotesExcludeLinked(
             "", id, NoteColumn::id | NoteColumn::title);
         while (n.executeStep())
@@ -29,22 +30,49 @@ namespace NTA
             auto item = new QListWidgetItem(QString::fromStdString(n.getColumn("title").getString()), ui->listWidget);
             ui->listWidget->addItem(item);
             items[item] = n.getColumn("id").getInt64();
+            ids[items[item]] = item;
         }
+        timer.setSingleShot(true);
+        connect(ui->lineEdit, &QLineEdit::textChanged, this, [this]()
+        {
+            if (timer.isActive())return;
+            timer.start(1000);
+        });
+        connect(&timer, &QTimer::timeout, this, [this]()
+        {
+            auto text = ui->lineEdit->text();
+            auto l = NLinkManager::getInstance()->
+                    searchNotesExcludeLinked(text, this->id, NoteColumn::id);
+            while (ui->listWidget->count())
+            {
+                ui->listWidget->takeItem(0);
+            }
+            while (l.executeStep())
+            {
+                ui->listWidget->addItem(ids[l.getColumn("id").getInt64()]);
+            }
+        });
     }
 
     NSelectNoteDialog::~NSelectNoteDialog()
     {
         delete ui;
+        timer.stop();
+        for (auto item: ids)
+        {
+            delete item;
+        }
     }
 
     QList<int64_t> NSelectNoteDialog::getSelected()
     {
         auto i = ui->listWidget->selectedItems();
-        QList<int64_t> ids;
-        for (auto item : i)
+        QList<int64_t> output;
+        for (auto item: this->ids)
         {
-            ids.append(items[item]);
+            if (item->isSelected())
+                output.append(items[item]);
         }
-        return ids;
+        return output;
     }
 } // NTA

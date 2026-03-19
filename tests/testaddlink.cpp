@@ -137,13 +137,12 @@ void LinkManagerTest::searchLinkFromSourceTest()
     QVERIFY(NTA::NLinkManager::getInstance()->addLink(2, 1));
     QVERIFY(NTA::NLinkManager::getInstance()->editLink(1, 2, "Test description", "Test alias"));
     QVERIFY(NTA::NLinkManager::getInstance()->editLink(2, 1, "Test description", "Test alias"));
-
-    auto links = NTA::NLinkManager::getInstance()->searchLinksOfSource("Test", 1);
+    auto links = NTA::NLinkManager::getInstance()->searchLinksOfSourceWithNoteTitle("Test", 1);
     QVERIFY(links.executeStep());
     QVERIFY(links.getColumn("source_id").getInt64() == 1);
     QVERIFY(links.getColumn("target_id").getInt64() == 2);
     QVERIFY(!links.executeStep());
-    links = NTA::NLinkManager::getInstance()->searchLinksOfSource("Test", 2);
+    links = NTA::NLinkManager::getInstance()->searchLinksOfSourceWithNoteTitle("Test", 2);
     QVERIFY(links.executeStep());
     QVERIFY(links.getColumn("source_id").getInt64() == 2);
     QVERIFY(links.getColumn("target_id").getInt64() == 1);
@@ -177,7 +176,7 @@ void LinkManagerTest::searchNotesExcludeLinkTest()
     }
     QVERIFY(count == 8);
     links = NTA::NLinkManager::getInstance()->searchNotesExcludeLinked("1", 1);
-    QVERIFY (links.executeStep());
+    QVERIFY(links.executeStep());
     QVERIFY(links.getColumn("id").getInt64() == 10);
     QVERIFY(!links.executeStep());
 }

@@ -7,6 +7,7 @@
 
 #include <QDialog>
 #include <qlistwidget.h>
+#include <QTimer>
 
 namespace NTA
 {
@@ -30,6 +31,8 @@ namespace NTA
     protected:
         int64_t id;
         QMap<QListWidgetItem*, int64_t> items;
+        QMap<int64_t, QListWidgetItem*> ids;
+        QTimer timer;
     private:
         Ui::NSelectNoteDialog* ui;
     };
