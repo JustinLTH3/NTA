@@ -45,9 +45,16 @@ namespace NTA
                 for (auto& i : s)
                 {
                     NLinkManager::getInstance()->addLink(note->id, i);
-                    auto l = NLinkManager::getInstance()->getLink(note->id, i);
+                    auto l = NLinkManager::getInstance()->getLink(note->id, i,
+                                                                  NoteLinkColumns::alias | NoteLinkColumns::description
+                                                                  | NoteLinkColumns::target_id);
                     if (l.executeStep())
-                        listWidget->addItem(QString::fromStdString(l.getColumn("alias").getString()));
+                    {
+                        createItem(l.getColumn("target_id").getInt64(),
+                                   QString::fromStdString(l.getColumn("title").getString()),
+                                   QString::fromStdString(l.getColumn("description").getString()),
+                                   QString::fromStdString(l.getColumn("alias").getString()));
+                    }
                 }
             }
         });
@@ -57,6 +64,13 @@ namespace NTA
             if (!note)return;
             auto sItems = listWidget->selectedItems();
             if (sItems.isEmpty())return;
+            for (auto item : sItems)
+            {
+                auto c = itemMap[item];
+                NLinkManager::getInstance()->removeLink(note->id, c);
+                itemMap.remove(item);
+                delete item;
+            }
         });
     }
 
@@ -79,30 +93,10 @@ namespace NTA
             auto links = NLinkManager::getInstance()->searchLinksOfSourceWithNoteTitle("", note->id);
             while (links.executeStep())
             {
-                auto* item = new QListWidgetItem(listWidget);
-                auto* widget = new QWidget(listWidget);
-                listWidget->addItem(item);
-                widget->setLayout(new QVBoxLayout(widget));
-                auto id = links.getColumn("target_id").getInt64();
-                auto title = new QLabel(widget);
-                title->setText(QString::fromStdString(links.getColumn("title").getString()));
-                auto alias = new QLineEdit(widget);
-                alias->setText(QString::fromStdString(links.getColumn("alias")));
-                auto description = new QLineEdit(widget);
-                description->setText(QString::fromStdString(links.getColumn("description")));
-                widget->layout()->addWidget(title);
-                widget->layout()->addWidget(alias);
-                widget->layout()->addWidget(description);
-                connect(alias, &QLineEdit::textEdited, alias, [this, id, alias, description](auto& text)
-                {
-                    NLinkManager::getInstance()->editLink(note->id, id, description->text(), text);
-                });
-                connect(description, &QLineEdit::textEdited, description, [this, id, alias, description](auto& text)
-                {
-                    NLinkManager::getInstance()->editLink(note->id, id, text, alias->text());
-                });
-                item->setSizeHint(widget->sizeHint());
-                listWidget->setItemWidget(item, widget);
+                createItem(links.getColumn("target_id").getInt64(),
+                           QString::fromStdString(links.getColumn("title").getString()),
+                           QString::fromStdString(links.getColumn("description").getString()),
+                           QString::fromStdString(links.getColumn("alias").getString()));
             }
         }
     }
@@ -116,5 +110,34 @@ namespace NTA
     void NLinkWidget::onNoteUpdated(int64_t id, NWidget* from, unsigned int columns)
     {
         NWidget::onNoteUpdated(id, from, columns);
+    }
+
+    void NLinkWidget::createItem(int64_t id, const QString& titleText, const QString& descriptionText,
+                                 const QString& aliasText)
+    {
+        auto* item = new QListWidgetItem(listWidget);
+        itemMap[item] = id;
+        auto* widget = new QWidget(listWidget);
+        listWidget->addItem(item);
+        widget->setLayout(new QVBoxLayout(widget));
+        auto title = new QLabel(widget);
+        title->setText(titleText);
+        auto alias = new QLineEdit(widget);
+        alias->setText(aliasText);
+        auto description = new QLineEdit(widget);
+        description->setText(descriptionText);
+        widget->layout()->addWidget(title);
+        widget->layout()->addWidget(alias);
+        widget->layout()->addWidget(description);
+        connect(alias, &QLineEdit::textEdited, alias, [this, id, alias, description](auto& text)
+        {
+            NLinkManager::getInstance()->editLink(note->id, id, description->text(), text);
+        });
+        connect(description, &QLineEdit::textEdited, description, [this, id, alias, description](auto& text)
+        {
+            NLinkManager::getInstance()->editLink(note->id, id, text, alias->text());
+        });
+        item->setSizeHint(widget->sizeHint());
+        listWidget->setItemWidget(item, widget);
     }
 } // NTA

@@ -91,12 +91,11 @@ namespace NTA
     {
         Q_ASSERT(columns != 0);
         QString query = R"(SELECT )";
-        if (columns & NoteLinkColumns::source_id)query.append("source_id_id, ");
-        if (columns & NoteLinkColumns::target_id)query.append("target_id_id, ");
+        if (columns & NoteLinkColumns::source_id)query.append("source_id, ");
+        if (columns & NoteLinkColumns::target_id)query.append("target_id, ");
         if (columns & NoteLinkColumns::description)query.append("description, ");
         if (columns & NoteLinkColumns::alias)query.append("alias, ");
-        query.removeAt(query.length() - 2);
-        query.append(" FROM note_links WHERE source_id = ? AND target_id = ?");
+        query.append("notes.title FROM note_links LEFT JOIN notes ON notes.id = ?2 WHERE source_id = ?1 AND target_id = ?2");
         SQLite::Statement statement(*space->getFile(), query.toStdString());
         statement.bind(1, from);
         statement.bind(2, to);

@@ -25,5 +25,7 @@ namespace NTA
         QListWidget* listWidget = nullptr;
         QToolButton* addBtn = nullptr;
         QToolButton* removeBtn = nullptr;
+        QMap<QListWidgetItem*, int64_t> itemMap;
+        void createItem(int64_t id, const QString& titleText, const QString& descriptionText, const QString& aliasText);
     };
 } // NTA
