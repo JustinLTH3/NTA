@@ -24,5 +24,6 @@ namespace NTA
     protected:
         QListWidget* listWidget = nullptr;
         QToolButton* addBtn = nullptr;
+        QToolButton* removeBtn = nullptr;
     };
 } // NTA
