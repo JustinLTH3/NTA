@@ -69,6 +69,8 @@ namespace NTA
 
     bool NLinkManager::editLink(int64_t from, int64_t to, QString description, QString alias)
     {
+        //Alias should not be empty.
+        if (alias.isEmpty())return false;
         SQLite::Statement statement(*space->getFile(),
                                     "UPDATE note_links SET description = ?, alias = ? WHERE source_id = ? AND target_id = ?");
         statement.bind(1, description.toStdString());
