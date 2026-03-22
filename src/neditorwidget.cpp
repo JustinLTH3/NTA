@@ -88,6 +88,12 @@ namespace NTA
         }
     }
 
+    void NEditorWidget::focusInEvent(QFocusEvent* event)
+    {
+        NWidget::focusInEvent(event);
+        content->setFocus();
+    }
+
     void NEditorWidget::onFocusNoteChanged(int64_t old, int64_t now)
     {
     }

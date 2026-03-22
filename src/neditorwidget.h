@@ -22,6 +22,9 @@ namespace NTA
         void linkNote(const QSharedPointer<Note>& inNote, bool linked) override;
         void setNote(const QSharedPointer<Note>& inNote) override;
 
+    protected:
+        void focusInEvent(QFocusEvent* event) override;
+
     protected slots:
         void onFocusNoteChanged(int64_t old, int64_t now) override;
         void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns) override;

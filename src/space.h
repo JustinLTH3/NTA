@@ -30,12 +30,6 @@ namespace NTA
         QSharedPointer<SQLite::Database> getFile() { return file; }
 
 
-        /**
-         * @param from The source id of the link.
-         * @param to The target id of the link.
-         * @return Success or not.
-         */
-        bool addLink(int64_t from, int64_t to);
         bool deleteNote(int64_t id);
     protected:
         /**

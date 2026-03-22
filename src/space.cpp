@@ -68,7 +68,7 @@ namespace NTA
                 "     body,"
                 "     content = 'notes',"
                 "     content_rowid = id,"
-                "     tokenize = 'icu'"
+                "     tokenize = 'trigram'"
                 " );"
             );
             file->exec(" CREATE TABLE note_links"
@@ -76,6 +76,7 @@ namespace NTA
                 "     source_id INTEGER NOT NULL,"
                 "     target_id INTEGER NOT NULL,"
                 "     description TEXT,"
+                "     alias TEXT, "
                 "     FOREIGN KEY (source_id) REFERENCES notes (id)"
                 "         ON DELETE CASCADE"
                 "         ON UPDATE CASCADE,"
@@ -84,6 +85,9 @@ namespace NTA
                 "         ON UPDATE CASCADE,"
                 "     PRIMARY KEY (source_id, target_id)"
                 " );"
+            );
+            file->exec("CREATE VIRTUAL TABLE note_links_fts USING fts5("
+                "alias, description, content = 'note_links', tokenize = 'trigram', content_rowid='rowid');"
             );
             file->exec(" CREATE TABLE boards"
                 " ("
@@ -136,6 +140,37 @@ namespace NTA
                 "     ON notes"
                 " BEGIN"
                 "     INSERT INTO notes_fts(notes_fts, ROWID, title, body) VALUES ('delete', OLD.id, OLD.title, OLD.body);"
+                " END;"
+                ""
+            );
+
+            file->exec(
+                " CREATE TRIGGER update_note_links_fts"
+                "     AFTER UPDATE"
+                "     ON note_links"
+                "     FOR EACH ROW"
+                " BEGIN"
+                "     INSERT INTO note_links_fts(note_links_fts, rowid, alias, description) "
+                "     VALUES ('delete', OLD.rowid, OLD.alias, OLD.description);"
+                "     INSERT INTO note_links_fts (rowid, alias, description)"
+                "     VALUES (NEW.rowid, NEW.alias, NEW.description);"
+                " end;"
+                " "
+                " CREATE TRIGGER insert_note_links_fts"
+                "     AFTER INSERT"
+                "     ON note_links"
+                "     FOR EACH ROW"
+                " BEGIN"
+                "     INSERT INTO note_links_fts (rowid, alias, description)"
+                "     VALUES (NEW.rowid, NEW.alias, NEW.description);"
+                " END;"
+                " "
+                " CREATE TRIGGER delete_note_links_fts"
+                "     AFTER DELETE"
+                "     ON note_links"
+                " BEGIN"
+                "     INSERT INTO note_links_fts(note_links_fts, rowid, alias, description)"
+                "     VALUES ('delete', OLD.rowid, OLD.alias, OLD.description);"
                 " END;"
                 ""
             );
@@ -214,20 +249,6 @@ namespace NTA
     {
     }
 
-
-    bool Space::addLink(int64_t from, int64_t to)
-    {
-        if (from == to)return false;
-        SQLite::Statement check(*file, "SELECT id FROM notes WHERE id = ? OR id = ?");
-        check.bind(1, from);
-        check.bind(2, to);
-        if (!check.executeStep())return false;
-        if (!check.executeStep())return false;
-        SQLite::Statement statement(*file, "INSERT OR IGNORE INTO note_links (source_id, target_id) VALUES (?, ?)");
-        statement.bind(1, from);
-        statement.bind(2, to);
-        return statement.exec();
-    }
 
     bool Space::deleteNote(int64_t id)
     {
