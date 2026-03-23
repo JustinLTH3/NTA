@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 
 #include "md4c-html.h"
+#include "nmd.h"
 
 namespace NTA
 {
@@ -32,13 +33,18 @@ namespace NTA
         auto textBrowser = new QTextBrowser();
         central->layout()->addWidget(textBrowser);
         QString text = "# Testing html\n"
-            "[Datatypes In SQLite](https://www.sqlite.org/datatype3.html) [[Wiki link]]Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper urna non quam pretium, maximus ornare orci maximus. Donec et condimentum tellus. Donec gravida sodales pellentesque. Donec pharetra nisi tortor, sit amet ultrices nibh luctus id. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In dolor elit, scelerisque vitae dolor eu, hendrerit pellentesque ante. Etiam massa tellus, tristique ut diam et, aliquet pretium arcu. Morbi placerat augue sit amet sapien commodo, non posuere dui bibendum. Sed sodales lorem sed erat hendrerit, a pellentesque enim imperdiet. In lorem lacus, sagittis eget nulla nec, ultrices sollicitudin mauris. Sed pulvinar congue ante, nec tempor nulla elementum vitae. Sed porttitor ipsum sit amet lectus fringilla ultrices. Phasellus tristique arcu nunc, hendrerit tristique nunc tristique sodales. Phasellus euismod, urna vitae sodales blandit, tortor erat congue sapien, quis porttitor arcu lorem eu erat. Mauris ut urna ut dolor scelerisque iaculis ac in diam.";
+            "[Datatypes In SQLite](https://www.sqlite.org/datatype3.html) [[Wiki link]]Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper urna non quam pretium, maximus ornare orci maximus. Donec et condimentum tellus. Donec gravida sodales pellentesque. Donec pharetra nisi tortor, sit amet ultrices nibh luctus id. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In dolor elit, scelerisque vitae dolor eu, hendrerit pellentesque ante. Etiam massa tellus, tristique ut diam et, aliquet pretium arcu. Morbi placerat augue sit amet sapien commodo, non posuere dui bibendum. Sed sodales lorem sed erat hendrerit, a pellentesque enim imperdiet. In lorem lacus, sagittis eget nulla nec, ultrices sollicitudin mauris. Sed pulvinar congue ante, nec tempor nulla elementum vitae. Sed porttitor ipsum sit amet lectus fringilla ultrices. Phasellus tristique arcu nunc, hendrerit tristique nunc tristique sodales. Phasellus euismod, urna vitae sodales blandit, tortor erat congue sapien, quis porttitor arcu lorem eu erat. Mauris ut urna ut dolor scelerisque iaculis ac in diam."
+            "\n ``` c++ \n int main(); \n```\n"
+            "abcdefghijklmnopqrstuvwxyz\n"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+            "[[abcdefghijklmnopqrstuvwxyz | abcdefghijklmnopqrstuvwxyz]]\n"
+            "[[ABCDEFGHIJKLMNOPQRSTUVWXYZ | ABCDEFGHIJKLMNOPQRSTUVWXYZ]]";
         // MD4C flags
         unsigned flags = MD_DIALECT_GITHUB | MD_FLAG_WIKILINKS | MD_FLAG_LATEXMATHSPANS;
-
-        QByteArray array;
-        auto r = md_html(text.toUtf8(), MD_SIZE(text.size()), &captureHtmlFragment, &array, flags, 0);
-        if (!r)textBrowser->setPlainText(QString::fromUtf8(array));
+        nmd n;
+        QString result;
+        if (!n.md2html(text, result))
+            textBrowser->setPlainText(result);
     }
 
     void NRenderWidget::onFocusNoteChanged(int64_t old, int64_t now)

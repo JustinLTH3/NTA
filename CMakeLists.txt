@@ -59,6 +59,8 @@ add_executable(NTA src/main.cpp
         src/nbacklinkwidget.h
         src/nrenderwidget.cpp
         src/nrenderwidget.h
+        src/nmd.cpp
+        src/nmd.h
 )
 target_link_libraries(NTA
         Qt::Core
