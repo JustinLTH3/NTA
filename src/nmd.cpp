@@ -4,8 +4,11 @@
 
 #include "nmd.h"
 
+#include <QMap>
+
 #include "md4c-html.h"
 #include <QStringBuilder>
+#include <spdlog/spdlog.h>
 
 extern "C" {
 #include "entity.h"
@@ -253,7 +256,7 @@ namespace NTA
         case MD_SPAN_LATEXMATH: /*fall through*/
         case MD_SPAN_LATEXMATH_DISPLAY: append("</x-equation>");
             break;
-        case MD_SPAN_WIKILINK: append("</x-wikilink>");
+        case MD_SPAN_WIKILINK: append("</a>");
             break;
         }
 
@@ -508,7 +511,7 @@ namespace NTA
 
     void nmd::render_open_wikilink_span(const MD_SPAN_WIKILINK_DETAIL* det)
     {
-        append("<x-wikilink data-target=\"");
+        append("<a href=\"nta://");
         render_attribute(&det->target, &nmd::render_html_escaped);
         append("\">");
     }
