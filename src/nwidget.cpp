@@ -18,6 +18,7 @@
 #include "ElidingLabel.h"
 #include "FloatingDockContainer.h"
 #include "nspacemanager.h"
+#include "nwidgetmanager.h"
 #include "ui_NWidget.h"
 #include "QAction"
 
@@ -29,8 +30,12 @@ namespace NTA
         ui->setupUi(this);
         connect(this, &ads::CDockWidget::topLevelChanged, this, &NWidget::onFloat);
         auto a = new QAction(tr("pin"), this);
-        setTitleBarActions({a});
         connect(a, &QAction::triggered, this, &NWidget::togglePin);
+        linkCurrentAction = new QAction(tr("link"), this);
+        linkCurrentAction->setCheckable(true);
+        connect(linkCurrentAction, &QAction::triggered, this, &NWidget::linkCurrent);
+        setTitleBarActions({a, linkCurrentAction});
+
         connect(NNoteManager::getInstance(), &NNoteManager::noteUpdated, this, &NWidget::onNoteUpdated);
     }
 
@@ -53,12 +58,28 @@ namespace NTA
     {
         setNote(inNote);
         isLinked = linked && inNote;
+        linkCurrentAction->setChecked(isLinked);
     }
 
     void NWidget::setNote(const QSharedPointer<Note>& inNote)
     {
         if (inNote && inNote == note)return;
         note = inNote;
+    }
+
+    void NWidget::linkCurrent(bool l)
+    {
+        if (l && note)
+        {
+            isLinked = true;
+        }
+        else if (l != isLinked)
+        {
+            isLinked = false;
+            setNote(NNoteManager::getInstance()->getNoteWithId(NWidgetManager::getInstance()->currentNoteId));
+        }
+
+        linkCurrentAction->setChecked(isLinked);
     }
 
 
@@ -68,9 +89,9 @@ namespace NTA
         {
             floatingDockContainer()->setWindowFlag(Qt::WindowStaysOnTopHint,
                                                    (floatingDockContainer()->windowFlags() &
-                                                    Qt::WindowStaysOnTopHint) == 0);
+                                                       Qt::WindowStaysOnTopHint) == 0);
             //Widget will be hidden if not call for widgets within the floating dock container.
-            for (auto w: floatingDockContainer()->dockWidgets())
+            for (auto w : floatingDockContainer()->dockWidgets())
                 w->toggleView(true);
             floatingDockContainer()->show();
             //Delay as sometimes not successfully raise the widget if call immediate.
