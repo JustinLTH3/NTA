@@ -20,17 +20,6 @@
 
 namespace NTA
 {
-    static void captureHtmlFragment(const MD_CHAR* data, MD_SIZE data_size, void* userData)
-    {
-        QByteArray* array = static_cast<QByteArray*>(userData);
-
-        if (data_size > 0)
-        {
-            array->append(data, int(data_size));
-        }
-    }
-
-
     NRenderWidget::NRenderWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent)
         : NWidget(dockManager, title, parent)
     {
