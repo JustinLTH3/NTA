@@ -13,6 +13,7 @@
 #include "nlinkmanager.h"
 #include "nlinkwidget.h"
 #include "nnoteexplorer.h"
+#include "nrenderwidget.h"
 #include "nwidget.h"
 #include "nwidgetmanager.h"
 
@@ -61,6 +62,13 @@ namespace NTA
             spdlog::info("show backlink");
             auto backlink = NWidgetManager::getInstance()->createWidget<NBacklinkWidget>("Backlink", this);
             dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, backlink,
+                                         dockContainer->dockArea(0));
+        });
+        getWindowMenu()->addAction("Render", this, [this]()
+        {
+            spdlog::info("show render");
+            auto render = NWidgetManager::getInstance()->createWidget<NRenderWidget>("Render", this);
+            dockContainer->addDockWidget(ads::DockWidgetArea::CenterDockWidgetArea, render,
                                          dockContainer->dockArea(0));
         });
         connect(dockManager, &ads::CDockManager::floatingWidgetCreated, this,

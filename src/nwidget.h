@@ -28,16 +28,19 @@ namespace NTA
         [[nodiscard]] bool getIsLinked() const;
         virtual void linkNote(const QSharedPointer<Note>& inNote, bool linked = true);
         virtual void setNote(const QSharedPointer<Note>& inNote);
+        void linkCurrent(bool l = true);
 
     protected:
         QSharedPointer<Note> note;
         bool isLinked = false;
         QString typeName;
+        QAction* linkCurrentAction;
 
     protected slots:
         void onFloat(bool isFloating);
         void togglePin();
         virtual void onFocusNoteChanged(int64_t old, int64_t now) = 0;
+
         virtual void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns)
         {
         }
