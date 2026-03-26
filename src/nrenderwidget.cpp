@@ -9,8 +9,11 @@
 #include <qtextbrowser.h>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <spdlog/spdlog.h>
+#include <SQLiteCpp/Column.h>
 
 #include "md4c-html.h"
+#include "nlinkmanager.h"
 #include "nmd.h"
 #include "note.h"
 #include "nspacemanager.h"
@@ -46,14 +49,8 @@ namespace NTA
         central->setLayout(new QVBoxLayout(central));
         textBrowser = new QTextBrowser();
         central->layout()->addWidget(textBrowser);
-        // QString text = "# Testing html\n"
-        //     "[Datatypes In SQLite](https://www.sqlite.org/datatype3.html) [[Wiki link]]Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper urna non quam pretium, maximus ornare orci maximus. Donec et condimentum tellus. Donec gravida sodales pellentesque. Donec pharetra nisi tortor, sit amet ultrices nibh luctus id. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In dolor elit, scelerisque vitae dolor eu, hendrerit pellentesque ante. Etiam massa tellus, tristique ut diam et, aliquet pretium arcu. Morbi placerat augue sit amet sapien commodo, non posuere dui bibendum. Sed sodales lorem sed erat hendrerit, a pellentesque enim imperdiet. In lorem lacus, sagittis eget nulla nec, ultrices sollicitudin mauris. Sed pulvinar congue ante, nec tempor nulla elementum vitae. Sed porttitor ipsum sit amet lectus fringilla ultrices. Phasellus tristique arcu nunc, hendrerit tristique nunc tristique sodales. Phasellus euismod, urna vitae sodales blandit, tortor erat congue sapien, quis porttitor arcu lorem eu erat. Mauris ut urna ut dolor scelerisque iaculis ac in diam."
-        //     "\n ``` c++ \n int main(); \n```\n"
-        //     "abcdefghijklmnopqrstuvwxyz\n"
-        //     "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
-        //     "[[abcdefghijklmnopqrstuvwxyz | abcdefghijklmnopqrstuvwxyz]]\n"
-        //     "[[ABCDEFGHIJKLMNOPQRSTUVWXYZ | ABCDEFGHIJKLMNOPQRSTUVWXYZ]]";
-        // MD4C flags
+        textBrowser->setOpenLinks(false);
+        connect(textBrowser, &QTextBrowser::anchorClicked, this, &NRenderWidget::onAnchorClicked);
     }
 
     void NRenderWidget::setNote(const QSharedPointer<Note>& inNote)
@@ -82,6 +79,22 @@ namespace NTA
                 int v = textBrowser->verticalScrollBar()->value();
                 textBrowser->setHtml(s);
                 textBrowser->verticalScrollBar()->setValue(v);
+            }
+        }
+    }
+
+    void NRenderWidget::onAnchorClicked(const QUrl& url)
+    {
+        if (url.scheme() == "nta")
+        {
+            auto links = NLinkManager::getInstance()->getLinks(note->id);
+            while (links.executeStep())
+            {
+                if (links.getColumn("alias").getString() == url.path().toStdString())
+                {
+                    linkNote(NNoteManager::getInstance()->getNoteWithId(links.getColumn("target_id").getInt64()));
+                    return;
+                }
             }
         }
     }

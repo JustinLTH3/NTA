@@ -25,7 +25,7 @@ namespace NTA
     protected slots:
         void onFocusNoteChanged(int64_t old, int64_t now) override;
         void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns) override;
-
+        void onAnchorClicked(const QUrl& url);
     protected:
         QTextBrowser* textBrowser;
         QSharedPointer<nmd> mdParser;

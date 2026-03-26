@@ -44,7 +44,7 @@ namespace NTA
         for (int i = 0; i < 256; i++)
         {
             const auto ch = static_cast<unsigned char>(i);
-
+            escape_map[i] = 0;
             if (strchr("\"&<>", ch) != nullptr)
                 escape_map[i] |= NEED_HTML_ESC_FLAG;
 
@@ -511,8 +511,8 @@ namespace NTA
 
     void nmd::render_open_wikilink_span(const MD_SPAN_WIKILINK_DETAIL* det)
     {
-        append("<a href=\"nta://");
-        render_attribute(&det->target, &nmd::render_html_escaped);
+        append("<a href=\"nta:");
+        render_attribute(&det->target, &nmd::render_url_escaped);
         append("\">");
     }
 
