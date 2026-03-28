@@ -18,10 +18,6 @@ namespace NTA
 {
     const MD_CHAR* nmd::openHead[6] = {"<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>"};
     const MD_CHAR* nmd::closeHead[6] = {"</h1>\n", "</h2>\n", "</h3>\n", "</h4>\n", "</h5>\n", "</h6>\n"};
-#define ISDIGIT(ch)     ('0' <= (ch) && (ch) <= '9')
-#define ISLOWER(ch)     ('a' <= (ch) && (ch) <= 'z')
-#define ISUPPER(ch)     ('A' <= (ch) && (ch) <= 'Z')
-#define ISALNUM(ch)     (ISLOWER(ch) || ISUPPER(ch) || ISDIGIT(ch))
 
     nmd::nmd()
     {
@@ -37,7 +33,10 @@ namespace NTA
         {
             return ((nmd*)u)->text_callback(t, text, size, u);
         };
-        md.debug_log = nullptr;
+        md.debug_log = [](const char* msg, void*)
+        {
+            spdlog::info("{}", msg);
+        };
         md.syntax = nullptr;
 
         /* Build map of characters which need escaping. */
@@ -48,7 +47,7 @@ namespace NTA
             if (strchr("\"&<>", ch) != nullptr)
                 escape_map[i] |= NEED_HTML_ESC_FLAG;
 
-            if (!ISALNUM(ch) && strchr("~-_.+!*(),%#@?=;:/,+$", ch) == nullptr)
+            if (!isalnum(ch) && strchr("~-_.+!*(),%#@?=;:/,+$", ch) == nullptr)
                 escape_map[i] |= NEED_URL_ESC_FLAG;
         }
     }
@@ -56,7 +55,8 @@ namespace NTA
     int nmd::md2html(const QString& input, QString& result)
     {
         if (input.isEmpty())return 0;
-        auto r = md_parse(input.toUtf8(), MD_SIZE(input.size()), &md, this);
+        auto i = input.toUtf8();
+        auto r = md_parse(i, MD_SIZE(i.size()), &md, this);
         if (!r)result = QString::fromUtf8(temp);
         temp.clear();
         return r;
