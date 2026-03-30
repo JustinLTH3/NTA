@@ -15,11 +15,12 @@ namespace ads
 class NTestWidget : public NTA::NWidget
 {
     Q_OBJECT
+    friend class NWidgetManagerTest;
 
 public:
     explicit NTestWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);
 
 protected
 slots :
-    void onFocusNoteChanged(const QSharedPointer<NTA::Note>& newNote) override;
+    void onFocusNoteChanged(int64_t old, int64_t now) override;
 };

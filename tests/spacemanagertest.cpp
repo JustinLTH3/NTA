@@ -7,41 +7,41 @@
 #include "../src/nspacemanager.h"
 #include "../src/space.h"
 
-void SpaceManagerTest::initTestCase()
+void NoteManagerTest::initTestCase()
 {
     space.reset(NTA::Space::createSpace(QDir::current(), "space.nta"));
     QVERIFY(space != nullptr);
 }
 
-void SpaceManagerTest::createInstanceTest()
+void NoteManagerTest::createInstanceTest()
 {
-    QVERIFY(NTA::NSpaceManager::createInstance(space));
-    QVERIFY(NTA::NSpaceManager::getInstance());
+    QVERIFY(NTA::NNoteManager::createInstance(space));
+    QVERIFY(NTA::NNoteManager::getInstance());
 }
 
-void SpaceManagerTest::createInstanceWithNullSpaceTest()
+void NoteManagerTest::createInstanceWithNullSpaceTest()
 {
-    QVERIFY(!NTA::NSpaceManager::createInstance(nullptr));
-    QVERIFY(!NTA::NSpaceManager::getInstance());
+    QVERIFY(!NTA::NNoteManager::createInstance(nullptr));
+    QVERIFY(!NTA::NNoteManager::getInstance());
 }
 
-void SpaceManagerTest::createInstanceWhenAlreadyExistTest()
+void NoteManagerTest::createInstanceWhenAlreadyExistTest()
 {
-    QVERIFY(NTA::NSpaceManager::createInstance(space));
-    QVERIFY(!NTA::NSpaceManager::createInstance(space));
-    QVERIFY(NTA::NSpaceManager::getInstance());
-    NTA::NSpaceManager::destroyInstance();
+    QVERIFY(NTA::NNoteManager::createInstance(space));
+    QVERIFY(!NTA::NNoteManager::createInstance(space));
+    QVERIFY(NTA::NNoteManager::getInstance());
+    NTA::NNoteManager::destroyInstance();
 }
 
-void SpaceManagerTest::destroyInstanceTest()
+void NoteManagerTest::destroyInstanceTest()
 {
-    NTA::NSpaceManager::destroyInstance();
-    QVERIFY(!NTA::NSpaceManager::getInstance());
+    NTA::NNoteManager::destroyInstance();
+    QVERIFY(!NTA::NNoteManager::getInstance());
 }
 
-void SpaceManagerTest::cleanupTestCase()
+void NoteManagerTest::cleanupTestCase()
 {
-    NTA::NSpaceManager::destroyInstance();
+    NTA::NNoteManager::destroyInstance();
     space.reset();
     if (QDir::current().exists("space.nta"))
         (QDir::current().remove("space.nta"));

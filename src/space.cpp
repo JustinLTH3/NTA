@@ -68,7 +68,7 @@ namespace NTA
                 "     body,"
                 "     content = 'notes',"
                 "     content_rowid = id,"
-                "     tokenize = 'icu'"
+                "     tokenize = 'trigram'"
                 " );"
             );
             file->exec(" CREATE TABLE note_links"
@@ -76,6 +76,7 @@ namespace NTA
                 "     source_id INTEGER NOT NULL,"
                 "     target_id INTEGER NOT NULL,"
                 "     description TEXT,"
+                "     alias TEXT, "
                 "     FOREIGN KEY (source_id) REFERENCES notes (id)"
                 "         ON DELETE CASCADE"
                 "         ON UPDATE CASCADE,"
@@ -84,6 +85,9 @@ namespace NTA
                 "         ON UPDATE CASCADE,"
                 "     PRIMARY KEY (source_id, target_id)"
                 " );"
+            );
+            file->exec("CREATE VIRTUAL TABLE note_links_fts USING fts5("
+                "alias, description, content = 'note_links', tokenize = 'trigram', content_rowid='rowid');"
             );
             file->exec(" CREATE TABLE boards"
                 " ("
@@ -136,6 +140,37 @@ namespace NTA
                 "     ON notes"
                 " BEGIN"
                 "     INSERT INTO notes_fts(notes_fts, ROWID, title, body) VALUES ('delete', OLD.id, OLD.title, OLD.body);"
+                " END;"
+                ""
+            );
+
+            file->exec(
+                " CREATE TRIGGER update_note_links_fts"
+                "     AFTER UPDATE"
+                "     ON note_links"
+                "     FOR EACH ROW"
+                " BEGIN"
+                "     INSERT INTO note_links_fts(note_links_fts, rowid, alias, description) "
+                "     VALUES ('delete', OLD.rowid, OLD.alias, OLD.description);"
+                "     INSERT INTO note_links_fts (rowid, alias, description)"
+                "     VALUES (NEW.rowid, NEW.alias, NEW.description);"
+                " end;"
+                " "
+                " CREATE TRIGGER insert_note_links_fts"
+                "     AFTER INSERT"
+                "     ON note_links"
+                "     FOR EACH ROW"
+                " BEGIN"
+                "     INSERT INTO note_links_fts (rowid, alias, description)"
+                "     VALUES (NEW.rowid, NEW.alias, NEW.description);"
+                " END;"
+                " "
+                " CREATE TRIGGER delete_note_links_fts"
+                "     AFTER DELETE"
+                "     ON note_links"
+                " BEGIN"
+                "     INSERT INTO note_links_fts(note_links_fts, rowid, alias, description)"
+                "     VALUES ('delete', OLD.rowid, OLD.alias, OLD.description);"
                 " END;"
                 ""
             );
@@ -214,79 +249,11 @@ namespace NTA
     {
     }
 
-    QSharedPointer<Note> Space::createNote(const int64_t typeId, const QString& title)
-    {
-        //Check typeId exist in table
-        {
-            SQLite::Statement statement(*file, "SELECT * FROM note_type WHERE id = ?");
-            statement.bind(1, typeId);
-            if (!statement.executeStep())
-            {
-                spdlog::error("typeId {} not exist", typeId);
-                return nullptr;
-            }
-        }
-        SQLite::Statement statement(*file, "INSERT INTO notes (id, title, body, typeId) VALUES (null, ?, null, ?)");
 
-        statement.bind(1, title.toStdString());
-        statement.bind(2, typeId);
-        statement.exec();
-        SQLite::Statement r(*file, "SELECT * FROM notes WHERE id = last_insert_rowid()");
-        r.executeStep();
-        auto note = QSharedPointer<Note>(new Note{
-            .id = r.getColumn(0).getInt64(), .title = title,
-            .body = QString::fromStdString(r.getColumn(2).getString()), .typeId = typeId,
-            .createdAt = QDateTime::fromString(QString::fromStdString(r.getColumn(4).getString()),
-                                               "yyyy-MM-dd hh:mm:ss"),
-            .updatedAt = QDateTime::fromString(QString::fromStdString(r.getColumn(5).getString()),
-                                               "yyyy-MM-dd hh:mm:ss")
-        });
-        return note;
-    }
-
-    QSharedPointer<Note> Space::getNoteWithId(int64_t id)
+    bool Space::deleteNote(int64_t id)
     {
-        SQLite::Statement statement(*file, "SELECT * FROM notes WHERE id = ?");
+        SQLite::Statement statement(*file, "DELETE FROM notes WHERE id = ?");
         statement.bind(1, id);
-        if (statement.executeStep())
-        {
-            auto note = QSharedPointer<Note>(new Note{
-                .id = id, .title = QString::fromStdString(statement.getColumn("title").getString()),
-                .body = QString::fromStdString(statement.getColumn("body").getString()),
-                .typeId = statement.getColumn("typeId").getInt64(),
-                .createdAt = QDateTime::fromString(
-                    QString::fromStdString(statement.getColumn("created_at").getString()),
-                    "yyyy-MM-dd hh:mm:ss"),
-                .updatedAt = QDateTime::fromString(
-                    QString::fromStdString(statement.getColumn("updated_at").getString()),
-                    "yyyy-MM-dd hh:mm:ss")
-            });
-            return note;
-        }
-        return nullptr;
-    }
-
-    SQLite::Statement Space::searchNotes(const QString& param)
-    {
-        if (param.isEmpty())return {*file, "SELECT rowid as id FROM notes_fts ORDER BY rank"};
-        QString query = R"(SELECT rowid as id FROM notes_fts WHERE notes_fts MATCH '")";
-        query.append(param);
-        query.append(R"("' ORDER BY rank)");
-        SQLite::Statement statement(*file, query.toStdString());
-        return std::move(statement);
-    }
-
-    bool Space::addLink(int64_t from, int64_t to)
-    {
-        if (from == to)return false;
-        SQLite::Statement check(*file, "SELECT id FROM notes WHERE id = ? OR id = ?");
-        check.bind(1, from);
-        check.bind(2, to);
-        if (!check.executeStep())return false;
-        if (!check.executeStep())return false;
-        SQLite::Statement statement(*file, "INSERT OR IGNORE INTO note_links (source_id, target_id) VALUES (?, ?)");
-        statement.bind(1, from);
-        statement.bind(2, to);
         return statement.exec();
     }
 

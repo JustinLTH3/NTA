@@ -18,6 +18,7 @@ namespace NTA
     class NWidget : public ads::CDockWidget
     {
         Q_OBJECT
+        friend class NWidgetManager;
 
     public:
         explicit NWidget(ads::CDockManager* dockManager, const QString& title, QWidget* parent = nullptr);
@@ -25,19 +26,24 @@ namespace NTA
 
         [[nodiscard]] QSharedPointer<Note> getNote() const;
         [[nodiscard]] bool getIsLinked() const;
-        void linkNote(const QSharedPointer<Note>& inNote);
+        virtual void linkNote(const QSharedPointer<Note>& inNote, bool linked = true);
+        virtual void setNote(const QSharedPointer<Note>& inNote);
+        void linkCurrent(bool l = true);
 
     protected:
         QSharedPointer<Note> note;
         bool isLinked = false;
+        QString typeName;
+        QAction* linkCurrentAction;
 
     protected slots:
         void onFloat(bool isFloating);
         void togglePin();
-        /**
-         * @param newNote The new focusing note
-         */
-        virtual void onFocusNoteChanged(const QSharedPointer<Note>& newNote) = 0;
+        virtual void onFocusNoteChanged(int64_t old, int64_t now) = 0;
+
+        virtual void onNoteUpdated(int64_t id, NWidget* from, unsigned int columns)
+        {
+        }
 
     private:
         Ui::NWidget* ui;

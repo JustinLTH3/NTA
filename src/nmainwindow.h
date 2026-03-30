@@ -34,7 +34,8 @@ namespace NTA
     protected:
         QPointer<ads::CDockManager> dockManager;
         QPointer<ads::CDockContainerWidget> dockContainer;
-
+        void showEvent(QShowEvent *event)override;
+        virtual void hideEvent(QHideEvent *event)override;
     private:
         Ui::NMainWindow* ui;
     };

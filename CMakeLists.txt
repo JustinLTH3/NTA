@@ -42,6 +42,25 @@ add_executable(NTA src/main.cpp
         src/nwidget.ui
         src/nspacemanager.cpp
         src/nspacemanager.h
+        src/nnoteexplorer.cpp
+        src/nnoteexplorer.h
+        src/nwidgetmanager.cpp
+        src/nwidgetmanager.h
+        src/neditorwidget.cpp
+        src/neditorwidget.h
+        src/nlinkwidget.cpp
+        src/nlinkwidget.h
+        src/nlinkmanager.cpp
+        src/nlinkmanager.h
+        src/nselectnotedialog.cpp
+        src/nselectnotedialog.h
+        src/nselectnotedialog.ui
+        src/nbacklinkwidget.cpp
+        src/nbacklinkwidget.h
+        src/nrenderwidget.cpp
+        src/nrenderwidget.h
+        src/nmd.cpp
+        src/nmd.h
 )
 target_link_libraries(NTA
         Qt::Core
@@ -59,6 +78,11 @@ include_directories(Qt-Advanced-Docking-System)
 target_include_directories(NTA PRIVATE "Qt-Advanced-Docking-System/src")
 add_subdirectory(Qt-Advanced-Docking-System)
 target_link_libraries(NTA qtadvanceddocking-qt6)
+
+include_directories(md4c)
+target_include_directories(NTA PRIVATE "md4c/src")
+add_subdirectory(md4c)
+target_sources(NTA PRIVATE md4c/src/md4c-html.c md4c/src/md4c.c md4c/src/entity.c md4c/src)
 
 target_include_directories(fts5_icu PRIVATE fts5-icu-tokenizer/src)
 

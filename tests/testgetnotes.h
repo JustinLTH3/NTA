@@ -18,6 +18,7 @@ private slots:
     void searchNoteByTextTest();
     void searchNoteBySpecificTextTest();
     void searchNoteByEmptyTextTest();
+    void searchNoteWithSpecificColumnTest();
     void cleanup();
 
 private:
