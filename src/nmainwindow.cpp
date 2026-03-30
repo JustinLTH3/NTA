@@ -76,6 +76,7 @@ namespace NTA
                 {
                     spdlog::info("floating widget created");
                     floatingWidget->setParent(nullptr);
+                    floatingWidget->setWindowFlag(Qt::WindowMinimizeButtonHint);
                 });
     }
 
@@ -109,5 +110,17 @@ namespace NTA
     QMenu* NMainWindow::getHelpMenu() const
     {
         return ui->menuHelp;
+    }
+
+    void NMainWindow::showEvent(QShowEvent* event)
+    {
+        QMainWindow::showEvent(event);
+        dockContainer->setVisible(true);
+    }
+
+    void NMainWindow::hideEvent(QHideEvent* event)
+    {
+        QMainWindow::hideEvent(event);
+        dockContainer->setVisible(false);
     }
 } // NTA

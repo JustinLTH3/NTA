@@ -110,6 +110,7 @@ namespace NTA
         {
             //Remove parent for not bringing up other floating widgets.
             floatingDockContainer()->setParent(nullptr);
+            floatingDockContainer()->setWindowFlag(Qt::WindowMinimizeButtonHint);
         }
     }
 } // NTA
